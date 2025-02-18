@@ -27,5 +27,6 @@
         requirements_file: /opt/metatrader-setup/requirements.yml
         force: true
         type: both
-        dest: /etc/ansible
+        state: latest
+      become: false
     
