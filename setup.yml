@@ -23,6 +23,12 @@
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
+      vars:
+        metatrader_nb_profiles: "{{ metatrader_nb_profiles }}" 
+        meta_trader_user: "{{ metatrader_user }}"
+        metatrader_password: "{{ metatrader_password }}"
+        metatrader_group: "{{ metatrader_group }}"
+
     
     - name: Clone repository
       ansible.builtin.git:
