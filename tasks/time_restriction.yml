@@ -7,6 +7,10 @@
       - close_access_time.split(':')[1] | int >= 0 and close_access_time.split(':')[1] | int <= 59
     fail_msg: "Time format is not correct"
 
+- name: Set timezone
+  ansible.builtin.timezone:
+    name: "{{ timezone }}"
+  
 - name: Install ufw
   ansible.builtin.package:
     name: ufw

@@ -11,6 +11,11 @@
       prompt: "Enter the time to (re)open access format HH:MM"
       private: false
       default: "06:00"
+    
+    - name: timezone
+      prompt: "Enter the timezone"
+      private: false
+      default: "Europe/London"
   
   tasks:
   
