@@ -28,15 +28,15 @@
     - name: Clone repository
       ansible.builtin.git:
         repo: "{{ github_repo | regex_replace('https://', 'https://{{ github_token }}@') }}"
-        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
+        dest: /home/{{ metatrader_user }}/Desktop/SyncedGit
         update: yes
         force: yes
         clone: yes
 
     - name: Set permissions
       file:
-        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
-        owner: "{{ meta_trader_user }}"
+        dest: /home/{{ metatrader_user }}/Desktop/SyncedGit
+        owner: "{{ metatrader_user }}"
         group: "{{ metatrader_group }}"
         mode: '0755'
 
@@ -44,8 +44,8 @@
       cron:
         name: "Pull in crontab"
         minute: "*/5"
-        job: "cd /home/{{ meta_trader_user }}/Desktop/SyncedGit && git pull"
-        user: "{{ meta_trader_user }}"
+        job: "cd /home/{{ metatrader_user }}/Desktop/SyncedGit && git pull"
+        user: "{{ metatrader_user }}"
         state: present
   become: true
   become_user: root
