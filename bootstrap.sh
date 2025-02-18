@@ -49,6 +49,24 @@ install_git() {
     fi
 }
 
+ask_and_run_ansible(){
+    figlet -f slant "MetaTrader Installer v2"
+
+    # Prompt for SSH connection details
+    echo "Enter the target host (e.g., user@hostname or 'localhost' for local execution you must have exchanged ssh key):"
+    read TARGET_HOST
+
+
+    # Run the Ansible playbook
+    if [[ "$TARGET_HOST" == "localhost" ]]; then
+        ansible-pull -i localhost, -c local setup.yml --ask-become-pass -U "$GIT_REPOSITORY"
+    else
+        ansible-pull -i "$TARGET_HOST," setup.yml --ask-pass -U "$GIT_REPOSITORY"
+    fi
+
+}
+
+
 # Main script execution
 main() {
     check_command "ansible" || install_ansible
@@ -58,6 +76,8 @@ main() {
     ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml --ask-become-pass
     clear
     bash /opt/metatrader-setup/gh_setup.sh
+    ask_and_run_ansible
+    
 }
 
 main
