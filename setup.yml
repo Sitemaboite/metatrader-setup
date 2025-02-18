@@ -1,5 +1,6 @@
 ---
-- vars_prompt:
+- hosts: all
+  vars_prompt:
     - name: "metatrader_nb_profiles"
       prompt: "Enter the number of MetaTrader profiles"
       private: false
@@ -24,6 +25,7 @@
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
+  
     - name: Include playbook
       import_playbook: gh_setup.yml
   become: true
