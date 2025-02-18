@@ -1,22 +1,22 @@
 ---
 - hosts: all, localhost
   vars_prompt:
-    - name: "metatrader_nb_profiles"
+    - name: metatrader_nb_profiles
       prompt: "Enter the number of MetaTrader profiles"
       private: false
       default: 1
 
-    - name: "metatrader_user"
+    - name: metatrader_user
       prompt: "Enter the MetaTrader user"
       private: false
       default: "metatrader"
 
-    - name: "metatrader_password"
+    - name: metatrader_password
       prompt: "Enter the MetaTrader password"
       private: true
       default: "metatrader"
 
-    - name: "metatrader_group"
+    - name: metatrader_group
       prompt: "Enter the MetaTrader group"
       private: false
       default: "metatrader"
