@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+DEST_DIR="/opt/metatrader-setup"
+
 # Function to validate GitHub token
 validate_token() {
     RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $1" "https://api.github.com/user")
@@ -14,19 +16,19 @@ validate_token() {
 
 # Prompt for GitHub token with validation
 while true; do
-    if [[ -f "$HOME/.ghtoken" ]]; then
+    if [[ -f "$DEST_DIR/.ghtoken" ]]; then
         read -rp "GitHub Token found. Reuse it? (Yes/No): " REUSE_TOKEN
         if [[ "$REUSE_TOKEN" == "Yes" ]]; then
-            GITHUB_TOKEN=$(cat "$HOME/.ghtoken")
+            GITHUB_TOKEN=$(cat "$DEST_DIR/.ghtoken")
         else
             printf "Create a GitHub token at: https://github.com/settings/tokens\n"
             read -rsp "Enter your GitHub Token: " GITHUB_TOKEN
-            echo "$GITHUB_TOKEN" > "$HOME/.ghtoken"
+            echo "$GITHUB_TOKEN" > "$DEST_DIR/.ghtoken"
         fi
     else
         printf "Create a GitHub token at: https://github.com/settings/tokens\n"
         read -rsp "Enter your GitHub Token: " GITHUB_TOKEN
-        echo "$GITHUB_TOKEN" > "$HOME/.ghtoken"
+        echo "$GITHUB_TOKEN" > "$DEST_DIR/.ghtoken"
         printf "\n"
     fi
 
@@ -34,7 +36,7 @@ while true; do
         break
     else
         printf "\nInvalid GitHub Token. Please try again.\n"
-        rm -f "$HOME/.ghtoken"
+        rm -f "$DEST_DIR/.ghtoken"
     fi
 
 done
@@ -55,7 +57,7 @@ SELECTED_REPO=$(printf "%s" "$REPOS" | $MENU_CMD --prompt="Select a repository t
 
 if [ -n "$SELECTED_REPO" ]; then
     printf "Selected Repository: %s\n" "$SELECTED_REPO"
-    echo https://github.com/$SELECTED_REPO > $HOME/.ghrepo
+    echo https://github.com/$SELECTED_REPO > $DEST_DIR/.ghrepo
 else
     printf "No repository selected!\n"
     exit 1

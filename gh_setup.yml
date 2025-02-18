@@ -1,8 +1,8 @@
 --- # gh_setup.yml
 - hosts: all
   vars:
-    github_repo: "{{ lookup('file', '$HOME/.ghrepo') }}"
-    github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
+    github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
+    github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
   tasks:
     - name: Clone repository
       ansible.builtin.git:
