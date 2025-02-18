@@ -1,7 +1,7 @@
 #!/bin/env bash
 set -euo pipefail
 
-GIT_REPOSITORY=
+GIT_REPOSITORY=https://github.com/Sitemaboite/metatrader-setup.git
 
 # Function to check if Ansible is installed
 check_ansible() {
@@ -15,7 +15,7 @@ check_ansible() {
 }
 
 ansible_pull_run() {
-    ansible-pull https://github.com/Sitemaboite/metatrader-setup.git
+    ansible-pull $GIT_REPOSITORY
 }
 
 # Function to install Ansible on Debian/Ubuntu
@@ -40,6 +40,7 @@ install_ansible_suse() {
 
 # Main script execution
 if check_ansible; then
+    ansible_pull_run
     exit 0
 fi
 
@@ -56,3 +57,4 @@ else
 fi
 
 echo "Ansible installation completed successfully."
+ansible_pull_run
