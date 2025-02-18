@@ -15,7 +15,7 @@
     - name: timezone
       prompt: "Enter the timezone"
       private: false
-      default: "Europe/London"
+      default: "Europe/Berlin"
   
   tasks:
   
