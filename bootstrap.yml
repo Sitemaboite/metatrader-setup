@@ -21,3 +21,9 @@
         update: yes
         force: yes
         clone: yes
+    
+    - name: Install ansible requirements
+      community.general.ansible_galaxy_install:
+        requirements_file: /opt/metatrader-setup/requirements.yml
+        force: true
+    
