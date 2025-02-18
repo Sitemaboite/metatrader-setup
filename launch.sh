@@ -10,7 +10,16 @@ ask_and_run_ansible(){
     read TARGET_HOST
 
     # Use fzf to select the playbook
-    PLAYBOOK=$(echo -e "gh_setup.yml\nsetup.yml" | fzf --prompt="Select installation type: " --header="Git Setup Only / Full Installation")
+    echo "Select installation type:"
+    echo "1) Git Setup Only (gh_setup.yml)"
+    echo "2) Full Installation (setup.yml)"
+    read -p "Enter choice (1 or 2): " choice
+
+    case $choice in
+        1) PLAYBOOK="gh_setup.yml" ;;
+        2) PLAYBOOK="setup.yml" ;;
+        *) echo "Invalid choice" && exit 1 ;;
+    esac
 
     # Run the Ansible playbook
     if [[ "$TARGET_HOST" == "localhost" ]]; then
