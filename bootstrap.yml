@@ -26,4 +26,8 @@
       community.general.ansible_galaxy_install:
         requirements_file: /opt/metatrader-setup/requirements.yml
         force: true
+        type: "{{ item }}"
+      with_items:
+        - role
+        - collection
     
