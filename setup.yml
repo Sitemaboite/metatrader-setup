@@ -24,14 +24,9 @@
       ansible.builtin.include_role:
         name: lpi-code.metatrader
     
-    - name: Debug repo
-      debug:
-        var: github_repo
-
-    
     - name: Clone repository
       ansible.builtin.git:
-        repo: "{{ github_repo | regex_replace('https://', 'https://{{ github_token }}@') }}"
+        repo: "{{ github_repo }}"
         dest: /home/{{ metatrader_user }}/Desktop/SyncedGit
         update: yes
         force: yes
