@@ -22,7 +22,7 @@
       prompt: "Enter the MetaTrader group"
       private: false
       default: "metatrader"
-      
+
   tasks:
     - name: Include role
       ansible.builtin.include_role:
@@ -34,7 +34,7 @@
         metatrader_group: "{{ metatrader_group }}"
 
     - name: Include playbook
-      ansible.builtin.include_playbook:
+      ansible.builtin.import_playbook:
         file: /opt/metatrader-setup/gh_setup.yml
 
   become: true
