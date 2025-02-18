@@ -21,12 +21,12 @@ while true; do
         if [[ "$REUSE_TOKEN" == "Yes" ]]; then
             GITHUB_TOKEN=$(cat "$DEST_DIR/.ghtoken")
         else
-            printf "Create a GitHub token at: https://github.com/settings/tokens\n"
+            printf "Create a GitHub token at: https://github.com/settings/tokens\n Select the 'repo' scope and read onlyif possible.\n"
             read -rsp "Enter your GitHub Token: " GITHUB_TOKEN
             echo "$GITHUB_TOKEN" > "$DEST_DIR/.ghtoken"
         fi
     else
-        printf "Create a GitHub token at: https://github.com/settings/tokens\n"
+        printf "Create a GitHub token at: https://github.com/settings/tokens\nSelect the 'repo' scope and read onlyif possible.\n"
         read -rsp "Enter your GitHub Token: " GITHUB_TOKEN
         echo "$GITHUB_TOKEN" > "$DEST_DIR/.ghtoken"
         printf "\n"
