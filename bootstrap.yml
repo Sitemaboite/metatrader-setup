@@ -1,5 +1,5 @@
 - hosts: localhost
-  become: yes
+  become: true
   tasks:
     - name: Include vars for distribution
       ansible.builtin.include_vars:
