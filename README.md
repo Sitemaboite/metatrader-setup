@@ -29,4 +29,5 @@ You can also launch manually the playbook with the following command:
 ```bash
 $ ansible-playbook /opt/metatrader-setup/setup.yml # For the full setup
 $ ansible-playbook /opt/metatrader-setup/gh_setup.yml # For the sync only
+$ ansible-playbook /opt/metatrader-setup/time_restriction.yml # To restrict the time of access
 ```
