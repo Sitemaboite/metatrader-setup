@@ -11,6 +11,11 @@
   ansible.builtin.timezone:
     name: "{{ timezone }}"
 
+- name: Restart cron
+  ansible.builtin.service:
+    name: cron
+    state: restarted
+
 - name: Remove ufw
   ansible.builtin.package:
     name: ufw
