@@ -16,35 +16,19 @@
     name: ufw
     state: absent
 
-- name: Install firewalld
+- name: Install iptables
   ansible.builtin.package:
     name:
-      - firewalld
+      - iptables
       - conntrack
     state: present
-
-- name: Ensure firewalld is enabled and started
-  ansible.builtin.service:
-    name: firewalld
-    enabled: yes
-    state: started
-
-- name: Allow ssh and rdp
-  ansible.builtin.firewalld:
-    service: "{{ item }}"
-    permanent: yes
-    state: enabled
-    immediate: yes
-  with_items:
-    - ssh
-    - rdp
 
 - name: Set automatic open access
   cron:
     name: "automatic open access {{ item }}"
     minute: "{{ open_access_time.split(':')[1] }}"
     hour: "{{ open_access_time.split(':')[0] }}"
-    job: "firewall-cmd --add-port={{ item }}/tcp --permanent && firewall-cmd --reload"
+    job: "iptables -A INPUT -p tcp --dport {{ item }} -j ACCEPT"
     user: root
     state: present
   with_items:
@@ -58,9 +42,8 @@
     hour: "{{ close_access_time.split(':')[0] }}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
-      iptables -A INPUT -p tcp --dport {{ item }} -j DROP &&
-      firewall-cmd --remove-port={{ item }}/tcp --permanent &&
-      firewall-cmd --reload
+      iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
+      iptables -A INPUT -p tcp --dport {{ item }} -j DROP
     user: root
     state: present
   with_items:
