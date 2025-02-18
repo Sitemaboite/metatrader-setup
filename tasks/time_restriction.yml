@@ -16,10 +16,13 @@
     name: ufw
     state: present
   
-- name: Allow ssh
+- name: Allow ssh and rdp
   ansible.builtin.command:
-    cmd: "ufw allow ssh"
-    creates: /etc/ufw/applications.d/openssh-server
+    cmd: "ufw allow {{ item }}"
+  with_items:
+    - ssh
+    - 3389
+
   
 - name: Enable ufw
   ansible.builtin.service:
