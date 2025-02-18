@@ -4,5 +4,6 @@ required_packages:
   - git
   - curl
   - jq
+  - figlet
 
 github_repo: https://github.com/Sitemaboite/metatrader-setup
