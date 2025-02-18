@@ -16,34 +16,35 @@
     name: ufw
     state: absent
 
-- name: Install nftables
+- name: Install firewalld
   ansible.builtin.package:
-    name: nftables
+    name:
+      - firewalld
+      - conntrack
     state: present
 
-- name: Ensure nftables inet filter table and input chain exist
-  ansible.builtin.command:
-    cmd: "nft create table inet filter"
-  ignore_errors: yes
-
-- name: Ensure nftables input chain exists
-  ansible.builtin.command:
-    cmd: 'nft create chain inet filter input { type filter hook input priority 0 \; }'
-  ignore_errors: yes
+- name: Ensure firewalld is enabled and started
+  ansible.builtin.service:
+    name: firewalld
+    enabled: yes
+    state: started
 
 - name: Allow ssh and rdp
-  ansible.builtin.command:
-    cmd: "nft add rule inet filter input tcp dport {{ item }} accept"
+  ansible.builtin.firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
   with_items:
-    - 22  # SSH
-    - 3389  # RDP
+    - ssh
+    - rdp
 
 - name: Set automatic open access
   cron:
     name: "automatic open access {{ item }}"
     minute: "{{ open_access_time.split(':')[1] }}"
     hour: "{{ open_access_time.split(':')[0] }}"
-    job: "nft add rule inet filter input tcp dport {{ item }} accept"
+    job: "firewall-cmd --add-port={{ item }}/tcp --permanent && firewall-cmd --reload"
     user: root
     state: present
   with_items:
@@ -55,15 +56,13 @@
     name: "automatic close access {{ item }}"
     minute: "{{ close_access_time.split(':')[1] }}"
     hour: "{{ close_access_time.split(':')[0] }}"
-    job: conntrack -D -p tcp --dport {{ item }} && nft delete rule inet filter input tcp dport {{ item }} accept
+    job: >
+      conntrack -D -p tcp --dport {{ item }} &&
+      iptables -A INPUT -p tcp --dport {{ item }} -j DROP &&
+      firewall-cmd --remove-port={{ item }}/tcp --permanent &&
+      firewall-cmd --reload
     user: root
     state: present
   with_items:
     - 22  # SSH
     - 3389  # RDP
-
-- name: Ensure nftables is enabled
-  ansible.builtin.service:
-    name: nftables
-    enabled: yes
-    state: started
