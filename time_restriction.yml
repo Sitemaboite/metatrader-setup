@@ -11,10 +11,7 @@
       prompt: "Enter the time to (re)open access format HH:MM"
       private: false
       default: "06:00"
-
-  vars:
-    github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
-    github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
+      
   tasks:
     
     - name: Include tasks
