@@ -5,11 +5,6 @@ set -euo pipefail
 ask_and_run_ansible(){
     figlet -f slant "MetaTrader Installer v2"
 
-    # Prompt for SSH connection details
-    echo "Enter the target host (e.g., user@hostname or 'localhost' for local execution you must have exchanged ssh key):"
-    read TARGET_HOST
-
-    # Use fzf to select the playbook
     echo "Select installation type:"
     echo "1) Git Setup Only (gh_setup.yml)"
     echo "2) Full Installation (setup.yml)"
@@ -20,6 +15,10 @@ ask_and_run_ansible(){
         2) PLAYBOOK="setup.yml" ;;
         *) echo "Invalid choice" && exit 1 ;;
     esac
+    # Prompt for SSH connection details
+    echo "Enter the target host (e.g., user@hostname or 'localhost' for local execution you must have exchanged ssh key):"
+    read TARGET_HOST
+
 
     # Run the Ansible playbook
     if [[ "$TARGET_HOST" == "localhost" ]]; then
