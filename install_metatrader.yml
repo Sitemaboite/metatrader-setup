@@ -1,0 +1,37 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false
+  vars_prompt:
+    - name: "metatrader_nb_profiles"
+      prompt: "Enter the number of MetaTrader profiles"
+      private: false
+      default: 1
+
+    - name: "meta_trader_user"
+      prompt: "Enter the MetaTrader user"
+      private: false
+      default: "metatrader"
+
+    - name: "metatrader_password"
+      prompt: "Enter the MetaTrader password"
+      private: true
+      default: "metatrader"
+
+    - name: "metatrader_group"
+      prompt: "Enter the MetaTrader group"
+      private: false
+      default: "metatrader"
+
+  tasks:
+    - name: Include role
+      ansible.builtin.include_role:
+        name: lpi-code.metatrader
+      vars:
+        metatrader_nb_profiles: "{{ metatrader_nb_profiles }}"
+        meta_trader_user: "{{ meta_trader_user }}"
+        metatrader_password: "{{ metatrader_password }}"
+        metatrader_group: "{{ metatrader_group }}"
+
+  become: true
+  become_user: root
