@@ -56,7 +56,7 @@ main() {
 
     echo "Ansible and Git installation completed successfully."
     ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml --ask-become-pass
-    source /opt/metatrader-setup/gh_setup.sh
+    /opt/metatrader-setup/gh_setup.sh
 }
 
 main
