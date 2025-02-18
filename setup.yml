@@ -18,7 +18,6 @@
   vars:
     github_repo: "{{ lookup('file', '$HOME/.ghrepo') }}"
     github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
-    metatrader_group: "{{ metatrader_user }}"
   tasks:
     - name: Show variables
       debug:
@@ -30,7 +29,7 @@
         metatrader_nb_profiles: "{{ metatrader_nb_profiles }}" 
         meta_trader_user: "{{ metatrader_user }}"
         metatrader_password: "{{ metatrader_password }}"
-        metatrader_group: "{{ metatrader_group }}"
+        metatrader_group: "{{ metatrader_user }}"
 
     
     - name: Clone repository

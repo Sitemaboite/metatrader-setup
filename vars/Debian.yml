@@ -1,1 +1,9 @@
 --- # vars/Debian.yml, also vars/Ubuntu.yml
+required_packages:
+  - python3
+  - fzf
+  - git
+  - curl
+  - jq
+  - figlet
+  - python3-pip

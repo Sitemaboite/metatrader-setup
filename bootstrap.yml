@@ -22,6 +22,12 @@
         force: yes
         clone: yes
     
+    - name: Install pip dependencies
+      ansible.builtin.pip:
+        name: "{{ pip_dependency }}"
+        state: present
+        
+    
     - name: Install ansible requirements
       community.general.ansible_galaxy_install:
         requirements_file: /opt/metatrader-setup/requirements.yml
