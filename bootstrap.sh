@@ -59,9 +59,9 @@ ask_and_run_ansible(){
 
     # Run the Ansible playbook
     if [[ "$TARGET_HOST" == "localhost" ]]; then
-        ansible-pull -i localhost, -c local setup.yml --ask-become-pass -U "$GIT_REPOSITORY"
+        ansible-pull -i localhost -c local setup.yml --ask-become-pass -U "$GIT_REPOSITORY"
     else
-        ansible-pull -i "$TARGET_HOST," setup.yml --ask-pass -U "$GIT_REPOSITORY"
+        ansible-pull -i "$TARGET_HOST" setup.yml --ask-pass -U "$GIT_REPOSITORY"
     fi
 
 }
