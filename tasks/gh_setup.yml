@@ -33,6 +33,6 @@
   cron:
     name: "Pull in crontab"
     minute: "*/5"
-    job: "cd /home/{{ metatrader_user }}/Desktop/ && git pull"
+    job: "cd /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM && git pull"
     user: "{{ metatrader_user }}"
     state: present
