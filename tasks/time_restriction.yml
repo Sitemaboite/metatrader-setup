@@ -10,51 +10,52 @@
 - name: Set timezone
   ansible.builtin.timezone:
     name: "{{ timezone }}"
-  
-- name: Install ufw
+
+- name: Remove ufw
   ansible.builtin.package:
     name: ufw
+    state: absent
+
+- name: Install nftables
+  ansible.builtin.package:
+    name: nftables
     state: present
-  
+
 - name: Allow ssh and rdp
   ansible.builtin.command:
-    cmd: "ufw allow {{ item }}"
+    cmd: "nft add rule inet filter input tcp dport {{ item }} accept"
   with_items:
-    - ssh
-    - 3389
-
-  
-- name: Enable ufw
-  ansible.builtin.service:
-    name: ufw
-    enabled: yes
-    state: started
+    - 22  # SSH
+    - 3389  # RDP
 
 - name: Set automatic open access
   cron:
     name: "automatic open access {{ item }}"
     minute: "{{ open_access_time.split(':')[1] }}"
     hour: "{{ open_access_time.split(':')[0] }}"
-    job: "ufw allow {{ item }}"
+    job: "nft add rule inet filter input tcp dport {{ item }} accept"
     user: root
     state: present
   with_items:
-    - ssh
-    - 3389
+    - 22  # SSH
+    - 3389  # RDP
 
 - name: Set automatic close access
   cron:
     name: "automatic close access {{ item }}"
     minute: "{{ close_access_time.split(':')[1] }}"
     hour: "{{ close_access_time.split(':')[0] }}"
-    job: "ufw deny {{ item }}"
+    job: |
+      conntrack -D -p tcp --dport {{ item }}
+      nft delete rule inet filter input tcp dport {{ item }} accept
     user: root
     state: present
   with_items:
-    - ssh
-    - 3389
+    - 22  # SSH
+    - 3389  # RDP
 
-- name: Activate ufw
-  ansible.builtin.shell:
-    cmd: "yes | ufw enable"
-    creates: /etc/ufw/ufw.conf
+- name: Ensure nftables is enabled
+  ansible.builtin.service:
+    name: nftables
+    enabled: yes
+    state: started
