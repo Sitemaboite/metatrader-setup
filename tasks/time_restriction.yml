@@ -26,7 +26,7 @@
 - name: Set automatic open access
   cron:
     name: "automatic open access {{ item }}"
-    minute: "{{ open_access_time.split(':')[1 }}"
+    minute: "{{ open_access_time.split(':')[1] }}"
     hour: "{{ open_access_time.split(':')[0] }}"
     job: "ufw allow {{ item }}"
     user: root
@@ -38,7 +38,7 @@
 - name: Set automatic close access
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ close_access_time.split(':')[1 }}"
+    minute: "{{ close_access_time.split(':')[1] }}"
     hour: "{{ close_access_time.split(':')[0] }}"
     job: "ufw deny {{ item }}"
     user: root
