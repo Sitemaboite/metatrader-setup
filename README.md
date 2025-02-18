@@ -8,6 +8,8 @@ Bootstrap the installation by running the following command in your terminal:
 ```bash
 $ bash <(curl -fsSL https://raw.githubusercontent.com/Sitemaboite/metatrader-setup/refs/heads/main/bootstrap.sh)
 ```
+This command will make sure all custom development are up to date with source.
+
 
 1. This will prompt you for a BECOME password : it is the password you usually use to install software on your computer (sudo password).
 This will install locally all necessry tools to provision local or distant equipment.
