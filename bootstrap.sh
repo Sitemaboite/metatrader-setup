@@ -56,6 +56,7 @@ main() {
 
     echo "Ansible and Git installation completed successfully."
     ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml
+    source gh_setup.sh
 }
 
 main

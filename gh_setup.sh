@@ -2,32 +2,6 @@
 
 set -euo pipefail
 
-# Set default menu command (fzf is preferred as it does not depend on Xorg)
-MENU_CMD="fzf"
-if ! command -v fzf &> /dev/null; then
-    printf "fzf not found. Installing...\n"
-    if [[ -f /etc/redhat-release ]]; then
-        sudo dnf install -y fzf ansible python3-venv curl git figlet
-    elif [[ -f /etc/debian_version ]]; then
-        sudo apt update && sudo apt install -y fzf ansible python3-venv curl git figlet
-    else
-        printf "Unsupported OS. Please install dependencies manually.\n"
-        exit 1
-    fi
-fi
-
-if ! command -v dmenu &> /dev/null; then
-    printf "dmenu not found. Installing...\n"
-    if [[ -f /etc/redhat-release ]]; then
-        sudo dnf install -y dmenu
-    elif [[ -f /etc/debian_version ]]; then
-        sudo apt update && sudo apt install -y dmenu
-    else
-        printf "Unsupported OS. Please install dmenu manually.\n"
-        exit 1
-    fi
-fi
-
 # Function to validate GitHub token
 validate_token() {
     RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $1" "https://api.github.com/user")
@@ -64,6 +38,9 @@ while true; do
     fi
 
 done
+
+# Define menu command (e.g., fzf for fuzzy finder)
+MENU_CMD="fzf"
 
 # Fetch repositories (public & private)
 REPOS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/user/repos?per_page=100" | jq -r '.[].full_name')
