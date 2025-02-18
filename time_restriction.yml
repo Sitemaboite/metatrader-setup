@@ -11,9 +11,9 @@
       prompt: "Enter the time to (re)open access format HH:MM"
       private: false
       default: "06:00"
-      
+  
   tasks:
-    
+  
     - name: Include tasks
       ansible.builtin.import_tasks:
         file: /opt/metatrader-setup/tasks/time_restriction.yml
