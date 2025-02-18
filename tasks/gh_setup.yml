@@ -13,9 +13,16 @@
     update: yes
     force: yes
     clone: yes
-  become: true
-  become_user: meta_trader_user
 
+- name: Force permission on all files
+  file:
+    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+    recurse: yes
+    state: directory
+    
 - name: Pull in crontab
   cron:
     name: "Pull in crontab"
