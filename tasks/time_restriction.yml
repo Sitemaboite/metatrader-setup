@@ -1,3 +1,11 @@
+- name: Check time is in the right format
+  assert:
+    that:
+      - open_access_time.split(':')[0] | int >= 0 and open_access_time.split(':')[0] | int <= 23
+      - open_access_time.split(':')[1] | int >= 0 and open_access_time.split(':')[1] | int <= 59
+      - close_access_time.split(':')[0] | int >= 0 and close_access_time.split(':')[0] | int <= 23
+      - close_access_time.split(':')[1] | int >= 0 and close_access_time.split(':')[1] | int <= 59
+  fail_msg: "Time format is not correct"
 - name: Install ufw
   ansible.builtin.package:
     name: ufw
