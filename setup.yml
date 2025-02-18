@@ -23,6 +23,10 @@
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
+    
+    - name: Debug repo
+      debug:
+        var: github_repo
 
     
     - name: Clone repository
