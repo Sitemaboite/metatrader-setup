@@ -1,0 +1,26 @@
+--- # gh_setup.yml
+- name: Create directory
+  file:
+    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Clone repository
+  ansible.builtin.git:
+    repo: "{{ github_repo }}"
+    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    update: yes
+    force: yes
+    clone: yes
+  become: true
+  become_user: meta_trader_user
+
+- name: Pull in crontab
+  cron:
+    name: "Pull in crontab"
+    minute: "*/5"
+    job: "cd /home/{{ metatrader_user }}/Desktop/ && git pull"
+    user: "{{ metatrader_user }}"
+    state: present
