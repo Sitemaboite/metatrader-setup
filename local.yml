@@ -2,11 +2,13 @@
   tasks:
     - name: Include vars for distribution
       include_vars:
-        files:
-          - vars/{{ ansible_distribution }}.yml
-          - vars/global.yml
-        paths:
-          - vars
+        file: "vars/{{ item }}"
+      with_items:
+        - global.yml
+        - "{{ ansible_distribution }}.yml"
+      
+
+
     
     - name: Install required packages
       package:
