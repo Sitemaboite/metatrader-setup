@@ -36,7 +36,7 @@
       file:
         dest: /home/{{ metatrader_user }}/Desktop/SyncedGit
         owner: "{{ metatrader_user }}"
-        group: "{{ metatrader_group }}"
+        group: "{{ metatrader_user }}"
         mode: '0755'
 
     - name: Pull in crontab
