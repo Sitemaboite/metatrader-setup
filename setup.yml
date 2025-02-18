@@ -15,14 +15,10 @@
       prompt: "Enter the MetaTrader password"
       private: true
       default: "metatrader"
-
-    - name: metatrader_group
-      prompt: "Enter the MetaTrader group"
-      private: false
-      default: "metatrader"
   vars:
     github_repo: "{{ lookup('file', '$HOME/.ghrepo') }}"
     github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
+    metatrader_group: "{{ metatrader_user }}"
   tasks:
     - name: Include role
       ansible.builtin.include_role:
