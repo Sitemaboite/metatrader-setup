@@ -55,7 +55,7 @@ main() {
     check_command "git" || install_git
 
     echo "Ansible and Git installation completed successfully."
-    ansible-pull -U "$GIT_REPOSITORY"
+    ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml
 }
 
 main
