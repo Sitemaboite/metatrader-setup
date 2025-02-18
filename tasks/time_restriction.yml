@@ -50,3 +50,8 @@
   with_items:
     - ssh
     - 3389
+
+- name: Activate ufw
+  ansible.builtin.shell:
+    cmd: "yes | ufw enable"
+    creates: /etc/ufw/ufw.conf
