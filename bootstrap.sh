@@ -59,9 +59,9 @@ ask_and_run_ansible(){
 
     # Run the Ansible playbook
     if [[ "$TARGET_HOST" == "localhost" ]]; then
-        ansible-pull -i localhost -c local setup.yml --ask-become-pass -U "$GIT_REPOSITORY"
+        ansible-playbook -i localhost -c local /opt/metatrader-setup/setup.yml --ask-become-pass
     else
-        ansible-pull -i "$TARGET_HOST" setup.yml --ask-pass -U "$GIT_REPOSITORY"
+        ansible-playbook -i "$TARGET_HOST" /opt/metatrader-setup/setup.yml --ask-pass
     fi
 
 }
