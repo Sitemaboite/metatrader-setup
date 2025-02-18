@@ -1,5 +1,5 @@
 --- # gh_setup.yml
-- hosts: all
+- hosts: all, localhost
   vars:
     github_repo: "{{ lookup('file', '$HOME/.ghrepo') }}"
     github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
