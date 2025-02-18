@@ -25,8 +25,28 @@
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
-  
-    - name: Include playbook
-      import_playbook: gh_setup.yml
+    
+    - name: Clone repository
+      ansible.builtin.git:
+        repo: "{{ github_repo | regex_replace('https://', 'https://{{ github_token }}@') }}"
+        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
+        update: yes
+        force: yes
+        clone: yes
+
+    - name: Set permissions
+      file:
+        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
+        owner: "{{ meta_trader_user }}"
+        group: "{{ metatrader_group }}"
+        mode: '0755'
+
+    - name: Pull in crontab
+      cron:
+        name: "Pull in crontab"
+        minute: "*/5"
+        job: "cd /home/{{ meta_trader_user }}/Desktop/SyncedGit && git pull"
+        user: "{{ meta_trader_user }}"
+        state: present
   become: true
   become_user: root
