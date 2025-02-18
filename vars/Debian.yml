@@ -1,0 +1,6 @@
+--- # vars/Debian.yml, also vars/Ubuntu.yml
+required_packages:
+  - python
+  - fzf
+  - git
+  - curl

@@ -1,0 +1,5 @@
+required_packages:
+  - python
+  - fzf
+  - git
+  - curl
