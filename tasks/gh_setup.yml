@@ -1,19 +1,25 @@
 - name: Create directory
   file:
-    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
     state: directory
+    recurse: yes
+
+- name: Install git
+  ansible.builtin.package:
+    name: git
+    state: present
 
 - name: Clone repository
-  ansible.builtin.git:
-    repo: "{{ github_repo }}"
-    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
-    update: yes
-    force: yes
-    clone: yes
+  ansible.builtin.command:
+    cmd: "git clone {{ github_repo }} /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM"
+    creates: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+  become: true
+  become_user: "{{ metatrader_user }}"
 
+  
 - name: Force permission on all files
   file:
     dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
@@ -22,7 +28,7 @@
     mode: '0755'
     recurse: yes
     state: directory
-    
+
 - name: Pull in crontab
   cron:
     name: "Pull in crontab"
