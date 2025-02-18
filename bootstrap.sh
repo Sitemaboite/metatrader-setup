@@ -59,9 +59,9 @@ ask_and_run_ansible(){
 
     # Run the Ansible playbook
     if [[ "$TARGET_HOST" == "localhost" ]]; then
-        ansible-playbook -i localhost -c local /opt/metatrader-setup/setup.yml --ask-become-pass
+        ansible-playbook -i localhost, -c local /opt/metatrader-setup/setup.yml --ask-become-pass
     else
-        ansible-playbook -i "$TARGET_HOST" /opt/metatrader-setup/setup.yml --ask-pass
+        ansible-playbook -i "$TARGET_HOST," /opt/metatrader-setup/setup.yml --ask-pass
     fi
 
 }

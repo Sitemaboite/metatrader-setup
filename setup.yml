@@ -20,6 +20,9 @@
     github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
     metatrader_group: "{{ metatrader_user }}"
   tasks:
+    - name: Show variables
+      debug:
+        msg: "{{ metatrader_nb_profiles }} {{ metatrader_user }} {{ metatrader_password }} {{ metatrader_group }}"
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
