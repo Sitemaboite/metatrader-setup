@@ -20,7 +20,9 @@
       prompt: "Enter the MetaTrader group"
       private: false
       default: "metatrader"
-
+  vars:
+    github_repo: "{{ lookup('file', '$HOME/.ghrepo') }}"
+    github_token: "{{ lookup('env', '$HOME/.ghtoken') }}"
   tasks:
     - name: Include role
       ansible.builtin.include_role:
