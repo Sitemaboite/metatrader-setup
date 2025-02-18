@@ -57,7 +57,7 @@ SELECTED_REPO=$(printf "%s" "$REPOS" | $MENU_CMD --prompt="Select a repository t
 
 if [ -n "$SELECTED_REPO" ]; then
     printf "Selected Repository: %s\n" "$SELECTED_REPO"
-    echo https://github.com/$SELECTED_REPO > $DEST_DIR/.ghrepo
+    echo https://$GITHUB_TOKEN@github.com/$SELECTED_REPO > $DEST_DIR/.ghrepo
 else
     printf "No repository selected!\n"
     exit 1
