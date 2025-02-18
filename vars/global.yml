@@ -3,3 +3,5 @@ required_packages:
   - fzf
   - git
   - curl
+
+github_repo: https://github.com/Sitemaboite/metatrader-setup

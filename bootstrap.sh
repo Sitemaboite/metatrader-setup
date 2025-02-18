@@ -56,8 +56,7 @@ main() {
 
     echo "Ansible and Git installation completed successfully."
     ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml
-    git clone "$GIT_REPOSITORY" /tmp/metatrader-setup
-    source /tmp/metatrader-setup/gh_setup.sh
+    source /opt/metatrader-setup/gh_setup.sh
 }
 
 main
