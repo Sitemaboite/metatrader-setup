@@ -55,9 +55,7 @@
     name: "automatic close access {{ item }}"
     minute: "{{ close_access_time.split(':')[1] }}"
     hour: "{{ close_access_time.split(':')[0] }}"
-    job: |
-      conntrack -D -p tcp --dport {{ item }}
-      nft delete rule inet filter input tcp dport {{ item }} accept
+    job: conntrack -D -p tcp --dport {{ item }} && nft delete rule inet filter input tcp dport {{ item }} accept
     user: root
     state: present
   with_items:
