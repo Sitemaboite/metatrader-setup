@@ -28,7 +28,7 @@
 
 - name: Ensure nftables input chain exists
   ansible.builtin.command:
-    cmd: "nft create chain inet filter input { type filter hook input priority 0 \; }"
+    cmd: 'nft create chain inet filter input { type filter hook input priority 0 \; }'
   ignore_errors: yes
 
 - name: Allow ssh and rdp
