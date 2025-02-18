@@ -1,7 +1,5 @@
 ---
-- name: Converge
-  hosts: all
-  vars_prompt:
+- vars_prompt:
     - name: "metatrader_nb_profiles"
       prompt: "Enter the number of MetaTrader profiles"
       private: false
