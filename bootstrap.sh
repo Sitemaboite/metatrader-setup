@@ -73,9 +73,9 @@ main() {
     check_command "git" || install_git
 
     echo "Ansible and Git installation completed successfully."
-    ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml --ask-become-pass
+    sudo ansible-pull -U "$GIT_REPOSITORY" bootstrap.yml
     clear
-    bash /opt/metatrader-setup/gh_setup.sh
+    sudo bash /opt/metatrader-setup/gh_setup.sh
     ask_and_run_ansible
     
 }
