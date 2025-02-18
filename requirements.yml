@@ -7,5 +7,6 @@ roles:
   - name: robertdebock.core_dependencies
   - name: robertdebock.epel
   - name: jakoblichterfeld.winehq
+  - name: lpi-code.metatrader
 collections:
   - name: community.general
