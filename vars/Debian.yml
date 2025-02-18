@@ -7,3 +7,4 @@ required_packages:
   - jq
   - figlet
   - sshpass
+  - python3-pip
