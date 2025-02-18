@@ -11,10 +11,6 @@
     github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
     github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
   tasks:
-
-    - name: Include role
-      ansible.builtin.include_role:
-        name: lpi-code.metatrader
     
     - name: Include tasks
       ansible.builtin.include_tasks:
