@@ -6,4 +6,4 @@ required_packages:
   - curl
   - jq
   - figlet
-  - python3-pip
+  - sshpass
