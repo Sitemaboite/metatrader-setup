@@ -51,7 +51,7 @@ if [ -z "$REPOS" ]; then
 fi
 
 # Prompt user to select a repository
-SELECTED_REPO=$(printf "%s" "$REPOS" | $MENU_CMD)
+SELECTED_REPO=$(printf "%s" "$REPOS" | $MENU_CMD --prompt="Select a repository to pull on host: ")
 
 if [ -n "$SELECTED_REPO" ]; then
     printf "Selected Repository: %s\n" "$SELECTED_REPO"
