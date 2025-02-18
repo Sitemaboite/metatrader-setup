@@ -22,10 +22,7 @@
       prompt: "Enter the MetaTrader group"
       private: false
       default: "metatrader"
-  vars:
-    github_repo: "{{ lookup('env', 'GITHUB_REPO') }}"
-    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
-
+      
   tasks:
     - name: Include role
       ansible.builtin.include_role:
@@ -36,29 +33,9 @@
         metatrader_password: "{{ metatrader_password }}"
         metatrader_group: "{{ metatrader_group }}"
 
-    - name: Clone repository
-      ansible.builtin.git:
-        repo: "{{ github_repo | regex_replace('https://', 'https://{{ github_token }}@') }}"
-        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
-        update: yes
-        force: yes
-        clone: yes
-
-    
-    - name: Set permissions
-      file:
-        dest: /home/{{ meta_trader_user }}/Desktop/SyncedGit
-        owner: "{{ meta_trader_user }}"
-        group: "{{ metatrader_group }}"
-        mode: '0755'
-    
-    - name: Pull in crontab
-      cron:
-        name: "Pull in crontab"
-        minute: "*/5"
-        job: "cd /home/{{ meta_trader_user }}/Desktop/SyncedGit && git pull"
-        user: "{{ meta_trader_user }}"
-        state: present
+    - name: Include playbook
+      ansible.builtin.include_playbook:
+        file: /opt/metatrader-setup/gh_setup.yml
 
   become: true
   become_user: root
