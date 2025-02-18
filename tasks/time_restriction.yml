@@ -21,6 +21,16 @@
     name: nftables
     state: present
 
+- name: Ensure nftables inet filter table and input chain exist
+  ansible.builtin.command:
+    cmd: "nft create table inet filter"
+  ignore_errors: yes
+
+- name: Ensure nftables input chain exists
+  ansible.builtin.command:
+    cmd: "nft create chain inet filter input { type filter hook input priority 0 \; }"
+  ignore_errors: yes
+
 - name: Allow ssh and rdp
   ansible.builtin.command:
     cmd: "nft add rule inet filter input tcp dport {{ item }} accept"
