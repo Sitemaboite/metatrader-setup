@@ -30,16 +30,13 @@
 
 - name: Set automatic open access
   cron:
-    name: "automatic open access {{ item }}"
+    name: "automatic open access"
     minute: "{{ open_access_time.split(':')[1] }}"
     hour: "{{ open_access_time.split(':')[0] }}"
-    job: "iptables -A INPUT -p tcp --dport {{ item }} -j ACCEPT"
+    job: >
+      iptables -F
     user: root
     state: present
-  with_items:
-    - 22  # SSH
-    - 3389  # RDP
-
 - name: Set automatic close access
   cron:
     name: "automatic close access {{ item }}"
