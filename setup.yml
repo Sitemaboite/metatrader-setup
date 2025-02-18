@@ -27,6 +27,6 @@
     
     - name: Include tasks
       ansible.builtin.import_tasks:
-        file: gh_setup.yml
+        file: /opt/metatrader-setup/tasks/gh_setup.yml
   become: true
   become_user: root

@@ -1,10 +1,12 @@
 ---
-- vars_prompt:
+- hosts: all
+  vars_prompt:
+
     - name: metatrader_user
       prompt: "Enter the MetaTrader user"
       private: false
       default: "metatrader"
-  hosts: all
+
   vars:
     github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
     github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
@@ -12,6 +14,6 @@
     
     - name: Include tasks
       ansible.builtin.import_tasks:
-        file: gh_setup.yml
+        file: /opt/metatrader-setup/tasks/gh_setup.yml
   become: true
   become_user: root

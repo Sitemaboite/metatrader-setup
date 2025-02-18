@@ -1,4 +1,3 @@
---- # gh_setup.yml
 - name: Create directory
   file:
     dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
