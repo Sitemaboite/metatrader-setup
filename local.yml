@@ -1,4 +1,5 @@
 - hosts: localhost
+  become: yes
   tasks:
     - name: Include vars for distribution
       include_vars:
@@ -6,8 +7,6 @@
       with_items:
         - global.yml
         - "{{ ansible_distribution }}.yml"
-      
-
 
     
     - name: Install required packages
