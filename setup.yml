@@ -24,8 +24,7 @@
     - name: Include role
       ansible.builtin.include_role:
         name: lpi-code.metatrader
-
     - name: Include playbook
-      import_playbook: /opt/metatrader-setup/gh_setup.yml
+      import_playbook: gh_setup.yml
   become: true
   become_user: root
