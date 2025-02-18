@@ -27,6 +27,5 @@
 
     - name: Include playbook
       import_playbook: /opt/metatrader-setup/gh_setup.yml
-
   become: true
   become_user: root
