@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_prompt:
+
+    - name: close_access_time
+      prompt: "Enter the time to close access format HH:MM"
+      private: false
+      default: "22:00"
+
+    - name: open_access_time
+      prompt: "Enter the time to (re)open access format HH:MM"
+      private: false
+      default: "06:00"
+
+  vars:
+    github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
+    github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
+  tasks:
+    
+    - name: Include tasks
+      ansible.builtin.import_tasks:
+        file: /opt/metatrader-setup/tasks/time_restriction.yml
+  become: true
+  become_user: root

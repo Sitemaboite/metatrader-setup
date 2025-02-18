@@ -1,0 +1,39 @@
+- name: Install ufw
+  ansible.builtin.package:
+    name: ufw
+    state: present
+  
+- name: Allow ssh
+  ansible.builtin.command:
+    cmd: "ufw allow ssh"
+    creates: /etc/ufw/applications.d/openssh-server
+  
+- name: Enable ufw
+  ansible.builtin.service:
+    name: ufw
+    enabled: yes
+    state: started
+
+- name: Set automatic open access
+  cron:
+    name: "automatic open access {{ item }}"
+    minute: "{{ open_access_time.split(':')[1 }}"
+    hour: "{{ open_access_time.split(':')[0] }}"
+    job: "ufw allow {{ item }}"
+    user: root
+    state: present
+  with_items:
+    - ssh
+    - 3389
+
+- name: Set automatic close access
+  cron:
+    name: "automatic close access {{ item }}"
+    minute: "{{ close_access_time.split(':')[1 }}"
+    hour: "{{ close_access_time.split(':')[0] }}"
+    job: "ufw deny {{ item }}"
+    user: root
+    state: present
+  with_items:
+    - ssh
+    - 3389
