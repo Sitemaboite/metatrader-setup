@@ -33,7 +33,7 @@
         requirements_file: /opt/metatrader-setup/requirements.yml
         force: true
         type: both
-        state: latest
+        #state: latest
       become: true
       become_user: "{{ my_user }}"
     
