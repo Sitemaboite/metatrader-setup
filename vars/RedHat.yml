@@ -1,0 +1,9 @@
+required_packages:
+  - python3
+  - fzf
+  - git
+  - curl
+  - jq
+  - figlet
+  - sshpass
+  - python3-pip
