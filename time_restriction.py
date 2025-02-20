@@ -67,7 +67,7 @@ ansible_command = [
     "ansible-playbook", 
     "-i", TARGET_HOST + ",",  # Single target inventory
     PLAYBOOK_PATH,
-    "--extra-vars", f"unblock_date={unblock_time_str} timezone={args.timezone}"
+    "--extra-vars", f"unblock_date='{unblock_time_str}' timezone={args.timezone}"
 ]
 
 if TARGET_HOST == "localhost":

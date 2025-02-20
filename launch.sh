@@ -20,14 +20,19 @@ ask_and_run_ansible(){
     # Prompt for SSH connection details
     echo "Enter the target host (e.g., user@hostname or 'localhost' for local execution you must have exchanged ssh key):"
     read TARGET_HOST
-
-
-    # Run the Ansible playbook
-    if [[ "$TARGET_HOST" == "localhost" ]]; then
-        ansible-playbook -i localhost, -c local /opt/metatrader-setup/$PLAYBOOK --ask-become-pass
-    else
-        ansible-playbook -i "$TARGET_HOST," /opt/metatrader-setup/$PLAYBOOK --ask-pass
+    if [[ "$PLAYBOOK" == "time_restriction.yml" ]]; then
+        export TARGET_HOST
+        /opt/metatrader-setup/time_restriction.py
+        else
+            # Run the Ansible playbook
+            if [[ "$TARGET_HOST" == "localhost" ]]; then
+                ansible-playbook -i localhost, -c local /opt/metatrader-setup/$PLAYBOOK --ask-become-pass
+            else
+                ansible-playbook -i "$TARGET_HOST," /opt/metatrader-setup/$PLAYBOOK --ask-pass
+            fi
     fi
+    
+
 }
 
 ask_and_run_ansible
