@@ -1,15 +1,15 @@
-- name: Check time is in the right format
-  assert:
-    that:
-      - open_access_time.split(':')[0] | int >= 0 and open_access_time.split(':')[0] | int <= 23
-      - open_access_time.split(':')[1] | int >= 0 and open_access_time.split(':')[1] | int <= 59
-      - close_access_time.split(':')[0] | int >= 0 and close_access_time.split(':')[0] | int <= 23
-      - close_access_time.split(':')[1] | int >= 0 and close_access_time.split(':')[1] | int <= 59
-    fail_msg: "Time format is not correct"
-
 - name: Set timezone
   ansible.builtin.timezone:
     name: "{{ timezone }}"
+
+- name: Locally set timezone
+  set_fact:
+    ansible_local:
+      timezone: "{{ timezone }}"
+  
+- name: Set unblock date
+  set_fact:
+    unblock_date: "{{ now() + timedelta(minutes=unblock_minutes, hours=unblock_hours, days=unblock_days, weeks=unblock_weeks, months=unblock_months) }}"
 
 - name: Restart cron
   ansible.builtin.service:
@@ -31,17 +31,18 @@
 - name: Set automatic open access
   cron:
     name: "automatic open access"
-    minute: "{{ open_access_time.split(':')[1] }}"
-    hour: "{{ open_access_time.split(':')[0] }}"
     job: >
       iptables -F
     user: root
     state: present
-- name: Set automatic close access
+
+- name: Close in 1 minute from now
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ close_access_time.split(':')[1] }}"
-    hour: "{{ close_access_time.split(':')[0] }}"
+    minute: "{{ unblock_date.minute }}"
+    hour: "{{ unblock_date.hour }}"
+    day: "{{ unblock_date.day }}"
+    month: "{{ unblock_date.month }}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&

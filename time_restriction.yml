@@ -16,9 +16,54 @@
       prompt: "Enter the timezone"
       private: false
       default: "Europe/Berlin"
+    
+    - name: unblock_minutes
+      prompt: "Enter the minutes at which the access will be unblocked (0-59)"
+      private: false
+      default: 0
+    
+    - name: unblock_hours
+      prompt: "Enter the hours at which the access will be unblocked"
+      private: false
+      default: 0
+    
+    - name: unblock_days
+      prompt: "Enter the days at which the access will be unblocked"
+      private: false
+      default: 0
+
+    - name: unblock_weeks
+      prompt: "Enter the weeks at which the access will be unblocked"
+      private: false
+      default: 0
+    
+    - name: unblock_months
+      prompt: "Enter the months at which the access will be unblocked"
+      private: false
+      default: 0
+
   
   tasks:
-  
+    - name: Checking time format
+      assert:
+        that:
+          - unblock_minutes | type_debug == "int"
+          - unblock_hours | type_debug == "int"
+          - unblock_days | type_debug == "int"
+          - unblock_weeks | type_debug == "int"
+          - unblock_months | type_debug == "int"
+        fail_msg: "Time format is not correct"
+
+    - name: Checking min and max values
+      assert:
+        that:
+          - unblock_minutes >= 0 and unblock_minutes <= 59
+          - unblock_hours >= 0 and unblock_hours <= 23
+          - unblock_days >= 0 and unblock_days <= 31
+          - unblock_weeks >= 0 and unblock_weeks <= 52
+          - unblock_months >= 0 and unblock_months <= 12
+        fail_msg: "Time format is not correct"
+      
     - name: Include tasks
       ansible.builtin.import_tasks:
         file: /opt/metatrader-setup/tasks/time_restriction.yml
