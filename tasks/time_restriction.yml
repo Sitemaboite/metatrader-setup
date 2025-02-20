@@ -40,10 +40,10 @@
 - name: Close in 1 minute from now
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ now | to_datetime | strftime('%M')}}"
-    hour: "{{ now | to_datetime | strftime('%H')}}"
-    day: "{{ now | to_datetime | strftime('%d')}}"
-    month: "{{ now | to_datetime | strftime('%m')}}"
+    minute: "{{ now.minute }}"
+    hour: "{{ now.hour }}"
+    day: "{{ now.day }}"
+    month: "{{ now.month }}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
