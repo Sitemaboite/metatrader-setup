@@ -38,7 +38,9 @@
     state: present
 
 - name: Get date 
-  command: TIMEZONE="{{ timezone }}" date -f "%Y-%m-%d %H:%M:%S %Z" "+%Y-%m-%d %H:%M:%S %Z"
+  command: date "+%Y-%m-%d %H:%M:%S %Z"
+  environment:
+    TZ: "{{ timezone }}"
   register: current_date
   changed_when: false
 
