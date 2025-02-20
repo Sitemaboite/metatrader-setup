@@ -20,12 +20,17 @@ This will install locally all necessry tools to provision local or distant equip
 
 3. You will enter a menu to pick a repository to be synced.
 
-To run the playbook, you can use the following command:
+### Wrapped launch
+To run the playbook, you can use the following command (it will prompt you for which playbook to run):
 ```bash
 $ /opt/metatrader-setup/launch.sh
 ```
+This will automatically run the right ansible-playbook command for you with the right inventory.
 
-You can also launch manually the playbook with the following command:
+
+### Manual launch
+*Use this only if you know what you are doing*
+You can also launch manually the playbook with the following command (You will need to have an inventory setup):
 ```bash
 $ ansible-playbook /opt/metatrader-setup/setup.yml # For the full setup
 $ ansible-playbook /opt/metatrader-setup/gh_setup.yml # For the sync only
