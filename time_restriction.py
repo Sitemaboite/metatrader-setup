@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 # Get target host from environment variable
 TARGET_HOST = os.getenv("TARGET_HOST", "undefined-host")
-PLAYBOOK_PATH = "/opt/meta-trader/time_restriction.yml"
+PLAYBOOK_PATH = "/opt/metatrader-setup/time_restriction.yml"
 
 if TARGET_HOST == "undefined-host":
     print("TARGET_HOST environment variable is not set, enter the host you want to restrict (use localhost it is this one).")
