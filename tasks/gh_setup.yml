@@ -1,6 +1,10 @@
+- name: Set distant path
+  set_fact:
+    distant_path: "/home/{{ metatrader_user }}/.mt5_{{ metatrader_profile }}/drive_c/Program Files/MetaTrader 5/MQL5/Experts"
+
 - name: Create directory
   file:
-    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts
+    dest: "{{ distant_path }}"
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
@@ -14,15 +18,14 @@
 
 - name: Clone repository
   ansible.builtin.command:
-    cmd: "git clone {{ github_repo }} /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM"
-    creates: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    cmd: "git clone {{ github_repo }} {{ distant_path }}/RM"
+    creates: "{{ distant_path }}/RM"
   become: true
   become_user: "{{ metatrader_user }}"
 
-  
 - name: Force permission on all files
   file:
-    dest: /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM
+    dest: "{{ distant_path }}"
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
@@ -33,6 +36,6 @@
   cron:
     name: "Pull in crontab"
     minute: "*/5"
-    job: "cd /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM && git pull"
+    job: "cd {{ distant_path }}/RM && git pull"
     user: "{{ metatrader_user }}"
     state: present

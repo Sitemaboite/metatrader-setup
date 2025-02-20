@@ -6,6 +6,11 @@
       prompt: "Enter the MetaTrader user"
       private: false
       default: "metatrader"
+    
+    - name: metatrader_nb_profiles
+      prompt: "Enter the number of MetaTrader instances"
+      private: false
+      default: 1
 
   vars:
     github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
@@ -15,5 +20,8 @@
     - name: Include tasks
       ansible.builtin.import_tasks:
         file: /opt/metatrader-setup/tasks/gh_setup.yml
+      with_sequence: start=1 end={{ metatrader_nb_profiles }}
+      loop_control:
+        loop_var: metatrader_profile
   become: true
   become_user: root
