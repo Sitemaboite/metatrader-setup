@@ -34,7 +34,7 @@
 
 - name: Pull in crontab
   cron:
-    name: "Pull in crontab"
+    name: "Pull for profile {{ metatrader_profile }}"
     minute: "*/5"
     job: "cd /home/{{ metatrader_user }}/Desktop/MQL5/Experts/RM && git pull"
     user: "{{ metatrader_user }}"
