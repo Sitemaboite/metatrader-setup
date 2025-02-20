@@ -1,7 +1,7 @@
 ---
 - hosts: all
   vars_prompt:
-    
+
     - name: timezone
       prompt: "Enter the timezone"
       private: false
@@ -42,16 +42,6 @@
           - unblock_days | type_debug == "int"
           - unblock_weeks | type_debug == "int"
           - unblock_months | type_debug == "int"
-        fail_msg: "Time format is not correct"
-
-    - name: Checking min and max values
-      assert:
-        that:
-          - unblock_minutes >= 0 and unblock_minutes <= 59
-          - unblock_hours >= 0 and unblock_hours <= 23
-          - unblock_days >= 0 and unblock_days <= 31
-          - unblock_weeks >= 0 and unblock_weeks <= 52
-          - unblock_months >= 0 and unblock_months <= 12
         fail_msg: "Time format is not correct"
       
     - name: Include tasks
