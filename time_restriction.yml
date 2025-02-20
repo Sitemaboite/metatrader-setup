@@ -1,16 +1,6 @@
 ---
 - hosts: all
   vars_prompt:
-
-    - name: close_access_time
-      prompt: "Enter the time to close access format HH:MM"
-      private: false
-      default: "22:00"
-
-    - name: open_access_time
-      prompt: "Enter the time to (re)open access format HH:MM"
-      private: false
-      default: "06:00"
     
     - name: timezone
       prompt: "Enter the timezone"
