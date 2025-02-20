@@ -48,8 +48,7 @@ unblock_time = now + timedelta(
 )
 
 # Format unblock time as string with timezone
-unblock_time_str = unblock_time.strftime("%Y-%m-%d %H:%M:%S %Z")
-unblock_time_str = unblock_time_str.replace("UTC", args.timezone)
+unblock_time_str = unblock_time.isoformat()
 
 # Confirmation prompt
 print("\n=== Access Block Confirmation ===")

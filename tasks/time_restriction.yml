@@ -27,11 +27,11 @@
 - name: Set automatic open access
   cron:
     name: "automatic open access"
-    minute: "{{ unblock_date | to_datetime | strftime('%M') }}"
-    hour: "{{ unblock_date | to_datetime | strftime('%H') }}"
-    day: "{{ unblock_date | to_datetime | strftime('%d') }}"
-    month: "{{ unblock_date | to_datetime | strftime('%m') }}"
-    year: "{{ unblock_date | to_datetime | strftime('%Y') }}"
+    minute: "{{ (unblock_date | to_datetime).minute }}"
+    hour: "{{ (unblock_date | to_datetime).hour }}"
+    day: "{{ (unblock_date | to_datetime).day }}"
+    month: "{{ (unblock_date | to_datetime).month }}"
+    year: "{{ (unblock_date | to_datetime).year }}"
     job: >
       iptables -F
     user: root
