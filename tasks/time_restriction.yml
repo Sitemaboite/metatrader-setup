@@ -31,7 +31,6 @@
     hour: "{{ (unblock_date | to_datetime).hour }}"
     day: "{{ (unblock_date | to_datetime).day }}"
     month: "{{ (unblock_date | to_datetime).month }}"
-    year: "{{ (unblock_date | to_datetime).year }}"
     job: >
       iptables -F
     user: root
@@ -44,7 +43,6 @@
     hour: "{{ now | to_datetime | strftime('%H')}}"
     day: "{{ now | to_datetime | strftime('%d')}}"
     month: "{{ now | to_datetime | strftime('%m')}}"
-    year: "{{ now | to_datetime | strftime('%Y')}}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
