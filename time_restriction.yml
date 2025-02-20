@@ -7,7 +7,7 @@
       private: false
       default: "Europe/Berlin"
     
-    - name: unblock_time
+    - name: unblock_date
       prompt: "Enter the date in iso format at which the equipment will be unblocked"
       private: false
       default: 0
