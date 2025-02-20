@@ -11,3 +11,4 @@ github_repo: https://github.com/Sitemaboite/metatrader-setup
 
 pip_dependency:
   - passlib
+  - pytz

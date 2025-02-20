@@ -4,6 +4,8 @@ import argparse
 import os
 import subprocess
 from datetime import datetime, timedelta
+from datetime import datetime
+import pytz
 
 # Get target host from environment variable
 TARGET_HOST = os.getenv("TARGET_HOST", "undefined-host")
@@ -48,6 +50,9 @@ unblock_time = now + timedelta(
 )
 
 # Format unblock time as string with timezone
+# Convert to specified timezone
+tz = pytz.timezone(args.timezone)
+unblock_time = pytz.utc.localize(unblock_time).astimezone(tz)
 unblock_time_str = unblock_time.strftime("%Y-%m-%d %H:%M:%S")
 
 # Confirmation prompt
