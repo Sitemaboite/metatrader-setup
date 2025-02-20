@@ -7,10 +7,6 @@
     ansible_local:
       timezone: "{{ timezone }}"
   
-- name: Set unblock date
-  set_fact:
-    unblock_date: "{{ now() + timedelta(minutes=unblock_minutes, hours=unblock_hours, days=unblock_days, weeks=unblock_weeks, months=unblock_months) }}"
-
 - name: Restart cron
   ansible.builtin.service:
     name: cron
@@ -39,7 +35,7 @@
 - name: Close in 1 minute from now
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ unblock_date.minute }}"
+    minute: 
     hour: "{{ unblock_date.hour }}"
     day: "{{ unblock_date.day }}"
     month: "{{ unblock_date.month }}"
