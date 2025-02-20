@@ -26,7 +26,7 @@
         name: lpi-code.metatrader
     
     - name: Include tasks
-      ansible.builtin.import_tasks:
+      ansible.builtin.include_tasks:
         file: /opt/metatrader-setup/tasks/gh_setup.yml
       with_sequence: start=1 end={{ metatrader_nb_profiles }}
       loop_control:
