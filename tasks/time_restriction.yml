@@ -37,13 +37,18 @@
     user: root
     state: present
 
+- name: Get date 
+  command: TIMEZONE="{{ timezone }}" date -f "%Y-%m-%d %H:%M:%S %Z" "+%Y-%m-%d %H:%M:%S %Z"
+  register: current_date
+  changed_when: false
+
 - name: Close in 1 minute from now
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ (now() | timezone(timezone)).minute }}"
-    hour: "{{ (now() | timezone(timezone)).hour }}"
-    day: "{{ (now() | timezone(timezone)).day }}"
-    month: "{{ (now() | timezone(timezone)).month }}"
+    minute: "{{ current_date.stdout.split(' ')[1] | int + 1 }}"
+    hour: "{{ current_date.stdout.split(' ')[2] }}"
+    day: "{{ current_date.stdout.split(' ')[3] }}"
+    month: "{{ current_date.stdout.split(' ')[4] }}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
