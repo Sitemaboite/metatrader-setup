@@ -32,7 +32,8 @@
     day: "{{ (unblock_date | to_datetime).day }}"
     month: "{{ (unblock_date | to_datetime).month }}"
     job: >
-      iptables -F
+      iptables -F &&
+      crontab -l | grep -v "automatic open access" | crontab -
     user: root
     state: present
 
@@ -46,7 +47,8 @@
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
-      iptables -A INPUT -p tcp --dport {{ item }} -j DROP
+      iptables -A INPUT -p tcp --dport {{ item }} -j DROP &&
+      crontab -l | grep -v "{{ item }}" | crontab -
     user: root
     state: present
   with_items:
