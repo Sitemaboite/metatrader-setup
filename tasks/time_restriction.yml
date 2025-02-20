@@ -27,11 +27,11 @@
 - name: Set automatic open access
   cron:
     name: "automatic open access"
-    minute: "{{ (unblock_date | to_datetime).strftime('%M')}}"
-    hour: "{{( unblock_date | to_datetime).strftime('%H')}}"
-    day: "{{( unblock_date | to_datetime).strftime('%d')}}"
-    month: "{{( unblock_date | to_datetime).strftime('%m')}}"
-    year: "{{( unblock_date | to_datetime).strftime('%Y')}}"
+    minute: "{{ unblock_date | to_datetime | strftime('%M') }}"
+    hour: "{{ unblock_date | to_datetime | strftime('%H') }}"
+    day: "{{ unblock_date | to_datetime | strftime('%d') }}"
+    month: "{{ unblock_date | to_datetime | strftime('%m') }}"
+    year: "{{ unblock_date | to_datetime | strftime('%Y') }}"
     job: >
       iptables -F
     user: root
@@ -40,11 +40,11 @@
 - name: Close in 1 minute from now
   cron:
     name: "automatic close access {{ item }}"
-    minute: "{{ now | to_datetime().strftime('%M')}}"
-    hour: "{{ now | to_datetime().strftime('%H')}}"
-    day: "{{ now | to_datetime().strftime('%d')}}"
-    month: "{{ now | to_datetime().strftime('%m')}}"
-    year: "{{ now | to_datetime().strftime('%Y')}}"
+    minute: "{{ now | to_datetime | strftime('%M')}}"
+    hour: "{{ now | to_datetime | strftime('%H')}}"
+    day: "{{ now | to_datetime | strftime('%d')}}"
+    month: "{{ now | to_datetime | strftime('%m')}}"
+    year: "{{ now | to_datetime | strftime('%Y')}}"
     job: >
       conntrack -D -p tcp --dport {{ item }} &&
       iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
