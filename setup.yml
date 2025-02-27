@@ -15,21 +15,30 @@
       prompt: "Enter the MetaTrader password"
       private:  true # This will hide the password
       default: "metatrader"
+    
+    - name: metatrader_restricted
+      prompt: "Is the user restricted (non-admin) ?"
+      private: false
+      default: false
 
   vars:
     github_repo: "{{ lookup('file', '/opt/metatrader-setup/.ghrepo') }}"
     github_token: "{{ lookup('env', '/opt/metatrader-setup/.ghtoken') }}"
-  tasks:
+  pre_tasks:
+    - name: Convert restricted to boolean
+      set_fact:
+        metatrader_restricted: "{{ metatrader_restricted | bool }}"
 
-    - name: Include role
-      ansible.builtin.include_role:
+  tasks:
+    - name: import role
+      ansible.builtin.import_role:
         name: lpi-code.metatrader
-    
     - name: Include tasks
       ansible.builtin.include_tasks:
         file: /opt/metatrader-setup/tasks/gh_setup.yml
       with_sequence: start=1 end={{ metatrader_nb_profiles }}
       loop_control:
         loop_var: metatrader_profile
+      when: metatrader_restricted == false
   become: true
   become_user: root
