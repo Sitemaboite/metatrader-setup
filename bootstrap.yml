@@ -26,6 +26,8 @@
       ansible.builtin.pip:
         name: "{{ pip_dependency }}"
         state: present
+        break_system_packages: true
+
 
     
     - name: Install ansible requirements
@@ -36,4 +38,3 @@
         #state: latest
       become: true
       become_user: "{{ my_user }}"
-    
