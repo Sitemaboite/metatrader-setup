@@ -25,8 +25,12 @@
   post_tasks:
     - name: Create JSON data
       set_fact:
-        json_data: "{{ {'host': host, 'key': key, 'api': api, 'relay': relay} | to_json }}"
-
+        json_data: "{{ {
+          'host': rustdesk__relay_server_domain + ':'  + rustdesk__signal_server_port
+          'key': _rustdesk_pubkey.content | b64decode,
+          'api': '',
+          'relay': rustdesk__relay_server_domain + ':' + rustdesk__relay_server_port } | to_json }}"
+          
     - name: Encode JSON data to Base64
       set_fact:
         base64_encoded: "{{ json_data | b64encode | regex_replace('\\+', '-') | regex_replace('/', '_') | regex_replace('=+$', '') }}"
