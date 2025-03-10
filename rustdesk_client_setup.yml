@@ -5,7 +5,8 @@
   pre_tasks:
     - name: Check that /opt/metatrader-setup/rustdesk_config.txt
       ansible.builtin.stat:
-        exists: /opt/metatrader-setup/rustdesk_config.txt
+        path: /opt/metatrader-setup/rustdesk_config.txt
+      register: config_file
       delegate_to: localhost
     - name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
       ansible.builtin.slurp:
