@@ -45,5 +45,12 @@
     - name: Display the result
       debug:
         msg: "Generated config string: {{ reversed_string }}"
+
+    - name: Save it to the controller (local machine)
+      ansible.builtin.copy:
+        content: "{{ reversed_string }}"
+        dest: /tmp/rustdesk_config.txt
+      delegate_to: localhost
+      
   become: true
   become_user: root
