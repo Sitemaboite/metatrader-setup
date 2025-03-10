@@ -16,7 +16,6 @@
       set_fact:
         config_string: "{{ lookup('file', '/opt/metatrader-setup/rustdesk_config.txt') }}"
       delegate_to: localhost
-      register: config_string
     - name: Install github3.py
       ansible.builtin.pip:
         name: github3.py
