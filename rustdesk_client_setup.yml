@@ -7,10 +7,14 @@
       ansible.builtin.stat:
         path: /opt/metatrader-setup/rustdesk_config.txt
       register: config_file
+    - name: Fail if /opt/metatrader-setup/rustdesk_config.txt does not exist
+      ansible.builtin.fail:
+        msg: "File /opt/metatrader-setup/rustdesk_config.txt does not exist"
+      when: config_file.stat.exists == False
       delegate_to: localhost
     - name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
-      ansible.builtin.slurp:
-        src: /opt/metatrader-setup/rustdesk_config.txt
+      set_fact:
+        config_string: "{{ lookup('file', '/opt/metatrader-setup/rustdesk_config.txt') }}"
       delegate_to: localhost
       register: config_string
     - name: Install github3.py
@@ -55,6 +59,6 @@
     
     - name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
       ansible.builtin.command:
-        cmd: "rustdesk --config {{ config_string.content }}"
+        cmd: "rustdesk --config {{ config_string }}"
   become: true
   become_user: root
