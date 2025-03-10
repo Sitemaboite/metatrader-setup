@@ -23,7 +23,7 @@
         # example : rustdesk-1.3.8-0.aarch64.rpm
         # example : rustdesk-1.3.8-0.x86_64.deb
         # except suse : rustdesk-1.3.8-0.aarch64-suse.rpm
-        rustdesk_package: "rustdesk-{{ rustdesk_release.tag }}-0.{{ ansible_architecture }}{{ '-suse' if ansible_os_family == 'Suse' }}.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}"
+        rustdesk_package: "rustdesk-{{ rustdesk_release.tag }}{{ '-0' if ansible_os_family == 'RedHat' else '' }}.{{ ansible_architecture }}{{ '-suse' if ansible_os_family == 'Suse' }}.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}"
   tasks:
     - name: Download rustdesk
       ansible.builtin.get_url:
