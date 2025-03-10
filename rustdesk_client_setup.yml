@@ -29,10 +29,16 @@
       ansible.builtin.get_url:
         url: "https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_release.tag }}/{{ rustdesk_package }}"
         dest: "/tmp/{{ rustdesk_package }}"
-    - name: Install rustdesk
-      ansible.builtin.package:
+    - name: Install rustdesk package (RedHat/SUSE)
+      ansible.builtin.yum:
         name: "/tmp/{{ rustdesk_package }}"
         state: present
+      when: ansible_os_family in ['RedHat', 'Suse']
+    - name: Install rustdesk package (Debian)
+      ansible.builtin.apt:
+        deb: "/tmp/{{ rustdesk_package }}"
+        state: present
+      when: ansible_os_family == 'Debian'
     - name: Enable headless mode
       ansible.builtin.command:
         cmd: "rustdesk --option allow-linux-headless Y"
