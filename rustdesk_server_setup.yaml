@@ -1,0 +1,21 @@
+---
+- hosts: all
+  vars_prompt:
+
+    - name: metatrader_user
+      prompt: "Enter the MetaTrader user"
+      private: false
+      default: "metatrader"
+    
+    - name: metatrader_nb_profiles
+      prompt: "Enter the number of MetaTrader instances"
+      private: false
+      default: 1
+  pre_tasks:
+    - name: Set public ipv4
+      ansible.builtin.set_fact:
+        rustdesk__relay_server_domain: "{{  ansible_default_ipv4.address }}"
+  roles:
+    - roles-ansible.rustdesk
+  become: true
+  become_user: root
