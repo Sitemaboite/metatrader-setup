@@ -3,6 +3,15 @@
   vars_prompt:
     - name: 
   pre_tasks:
+    - name: Check that /opt/metatrader-setup/rustdesk_config.txt
+      ansible.builtin.stat:
+        exists: /opt/metatrader-setup/rustdesk_config.txt
+      delegate_to: localhost
+    - name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
+      ansible.builtin.slurp:
+        src: /opt/metatrader-setup/rustdesk_config.txt
+      delegate_to: localhost
+      register: config_string
     - name: Install github3.py
       ansible.builtin.pip:
         name: github3.py
@@ -42,5 +51,9 @@
     - name: Enable headless mode
       ansible.builtin.command:
         cmd: "rustdesk --option allow-linux-headless Y"
+    
+    - name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
+      ansible.builtin.command:
+        cmd: "rustdesk --config {{ config_string.content }}"
   become: true
   become_user: root
