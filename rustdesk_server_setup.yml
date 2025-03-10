@@ -21,5 +21,22 @@
         state: present
   roles:
     - roles-ansible.rustdesk
+  
+  post_tasks:
+    - name: Create JSON data
+      set_fact:
+        json_data: "{{ {'host': host, 'key': key, 'api': api, 'relay': relay} | to_json }}"
+
+    - name: Encode JSON data to Base64
+      set_fact:
+        base64_encoded: "{{ json_data | b64encode | regex_replace('\\+', '-') | regex_replace('/', '_') | regex_replace('=+$', '') }}"
+
+    - name: Reverse the encoded string
+      set_fact:
+        reversed_string: "{{ base64_encoded[::-1] }}"
+
+    - name: Display the result
+      debug:
+        msg: "Generated config string: {{ reversed_string }}"
   become: true
   become_user: root
