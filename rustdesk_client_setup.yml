@@ -1,17 +1,17 @@
 ---
 - hosts: all
   vars_prompt:
-
-    - name: metatrader_user
-      prompt: "Enter the MetaTrader user"
-      private: false
-      default: "metatrader"
-  
+    - name: 
   pre_tasks:
     - name: Install github3.py
       ansible.builtin.pip:
         name: github3.py
         state: present
+      when: ansible_distribution != "Debian"
+    - name: Install github3.py
+      ansible.builtin.command:
+        cmd: "pip install --break-system-packages github3.py"
+      when: ansible_distribution == "Debian"
     - name: Get latest release on github of rustdesk
       community.general.github_release:
         user: rustdesk
@@ -26,7 +26,7 @@
         rustdesk_package: "rustdesk-{{ rustdesk_release.tag_name }}-0.{{ ansible_architecture }}.{{ ansible_distribution | lower }}.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}"
   tasks:
     - name: Download rustdesk
-      community.general.get_url:
+      ansible.builtin.get_url:
         url: "https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_release.tag_name }}/{{ rustdesk_package }}"
         dest: "/tmp/{{ rustdesk_package }}"
     - name: Install rustdesk
