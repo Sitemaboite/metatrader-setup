@@ -15,6 +15,10 @@
     - name: Set public ipv4
       ansible.builtin.set_fact:
         rustdesk__relay_server_domain: "{{  ansible_default_ipv4.address }}"
+    - name: install unzip
+      ansible.builtin.package:
+        name: unzip
+        state: present
   roles:
     - roles-ansible.rustdesk
   become: true
