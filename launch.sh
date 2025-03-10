@@ -18,7 +18,7 @@ ask_and_run_ansible(){
         2) PLAYBOOK="setup.yml" ;;
         3) PLAYBOOK="time_restriction.yml" ;;
         4) PLAYBOOK="rustdesk_client_setup.yml" ;;
-        4) PLAYBOOK="rustdesk_server_setup.yml" ;;
+        5) PLAYBOOK="rustdesk_server_setup.yml" ;;
         *) echo "Invalid choice" && exit 1 ;;
     esac
     # Prompt for SSH connection details
