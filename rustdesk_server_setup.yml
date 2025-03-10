@@ -49,8 +49,8 @@
     - name: Save it to the controller (local machine)
       ansible.builtin.copy:
         content: "{{ reversed_string }}"
-        dest: /tmp/rustdesk_config.txt
+        dest: /opt/metatrader-setup/rustdesk_config.txt
       delegate_to: localhost
-      
+
   become: true
   become_user: root
