@@ -140,7 +140,7 @@
   
 - name: Set ansible_users fact
   set_fact:
-    ansible_users: "{{ lookup('pipe', 'getent passwd | awk -F: \"$3 >= 1000 {print $1}\"' }}"
+    ansible_users: "{{ lookup('pipe', 'getent passwd | awk -F: \"$3 >= 1000 {print $1}\"') | list }}"
 
 - name: Set wireguard clients to be all user above 1000
   set_fact:
