@@ -60,6 +60,7 @@
   loop: "{{ wireguard_clients }}"
   loop_control:
     extended: true
+    extended_allitems: true # This is required to access the item variable in the template
 
 - name: Add client public keys to server configuration
   lineinfile:
