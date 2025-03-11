@@ -140,7 +140,7 @@
   
 - name: Set ansible_users fact
   set_fact:
-    ansible_users: "{{ ansible_facts.getent_passwd | dict2items | selectattr('value.uid', 'ge', 1000) | map(attribute='value') | list }}"
+    ansible_users: "{{ ansible_facts.getent_passwd | dict2items | selectattr('value.1', 'ge', 1000) | map(attribute='key') | list }}"
 - name: Set wireguard clients to be all user above 1000
   set_fact:
     wireguard_clients: "{{ ansible_users | dict2items | selectattr('value.uid', 'ge', 1000) | map(attribute='value.name') | list }}"
