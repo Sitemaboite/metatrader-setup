@@ -58,8 +58,6 @@
     dest: /etc/wireguard/clients/{{ item }}.conf
     mode: '0600'
   loop: "{{ wireguard_clients }}"
-  vars:
-    wireguard_client_address: "10.0.0.{{ ansible_loop.index0 + 2 }}"
 
 - name: Add client public keys to server configuration
   lineinfile:
