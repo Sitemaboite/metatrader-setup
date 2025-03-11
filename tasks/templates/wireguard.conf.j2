@@ -12,3 +12,9 @@ PostDown = sysctl net.ipv4.ip_forward=0
 PostDown = iptables -D FORWARD -i eth0 -o %i -j ACCEPT
 PostDown = iptables -D FORWARD -i %i -j ACCEPT
 PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+{% for item in wireguard_clients %}
+[Peer]
+PublicKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_publickey') }}
+AllowedIPs = 10.0.0.{{ ansible_loop.index + 2 }}/32
+{% endfor %}

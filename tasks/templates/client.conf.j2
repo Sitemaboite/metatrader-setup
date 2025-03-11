@@ -1,7 +1,7 @@
 [Interface]
 PrivateKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_privatekey') }}
 DNS = {{ wireguard_client_dns }}
-Address = 10.0.0.{{ ansible_loop.index }}/24
+Address = 10.0.0.{{ ansible_loop.index + 2 }}/24
 
 [Peer]
 PublicKey = {{ lookup('file', '/etc/wireguard/publickey') }}
