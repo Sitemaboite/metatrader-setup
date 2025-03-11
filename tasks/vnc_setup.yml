@@ -50,8 +50,15 @@
     mode: '0755'
   
 - name: Get user number (UID)
-  command: id -u {{ metatrader_user }}
-  register: user_uid
+  getent:
+    database: passwd
+    key: "{{ metatrader_user }}"
+  register: user_info
+  changed_when: false
+
+- name: Set user UID fact
+  set_fact:
+    user_uid: "{{ user_info.ansible_facts.getent_passwd[metatrader_user][1] }}"
   changed_when: false
 
 
