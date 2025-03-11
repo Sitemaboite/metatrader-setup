@@ -13,6 +13,8 @@
       - xfce4-goodies
       - dbus-x11
       - locales
+      - avahi-daemon
+      - libnss-mdns
     state: present
 
 - name: Generate locale
@@ -66,6 +68,10 @@
     user_uid: "{{ user_info.ansible_facts.getent_passwd[metatrader_user][1] }}"
   changed_when: false
 
+- name: Calculate VNC port
+  set_fact:
+    vnc_port: "{{ 5900 + user_uid | int - 1000 }}"
+
 - name: Create VNC service file for user
   copy:
     dest: "/etc/systemd/system/vncserver@{{ user_uid }}.service"
@@ -96,4 +102,24 @@
 - name: Ensure VNC service is running
   systemd:
     name: "vncserver@{{ user_uid }}.service"
+    state: restarted
+
+- name: Create Bonjour service file for VNC
+  copy:
+    dest: "/etc/avahi/services/vnc.service"
+    content: |
+      <?xml version="1.0" standalone='no'?>
+      <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+      <service-group>
+        <name replace-wildcards="yes">VNC Server on %h</name>
+        <service>
+          <type>_rfb._tcp</type>
+          <port>{{ vnc_port }}</port>
+        </service>
+      </service-group>
+    mode: '0644'
+
+- name: Restart Avahi daemon
+  systemd:
+    name: avahi-daemon
     state: restarted
