@@ -137,3 +137,13 @@
   systemd:
     name: avahi-daemon
     state: restarted
+  
+- name: Set wireguard clients to be all user above 1000
+  set_fact:
+    wireguard_clients: "{{ ansible_users | dict2items | selectattr('value.uid', 'ge', 1000) | map(attribute='value.name') | list }}"
+    wireguard_server_port: 51820
+    wireguard_server_address: "{{ ansible_default_ipv4.address }}"
+    wireguard_client_dns: 1.1.1.1
+
+- name: Setup VPN
+  include_tasks: wireguard.yml
