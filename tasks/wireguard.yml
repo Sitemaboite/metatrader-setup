@@ -7,7 +7,7 @@
     update_cache: yes
 
 - name: Generate WireGuard private key
-  command: wg genkey | tee /etc/wireguard/privatekey
+  shell: wg genkey | tee /etc/wireguard/privatekey
   args:
     creates: /etc/wireguard/privatekey
 
