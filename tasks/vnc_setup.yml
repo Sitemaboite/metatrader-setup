@@ -138,9 +138,20 @@
     name: avahi-daemon
     state: restarted
   
+- name: Get passwd database
+  getent:
+    database: passwd
+  register: passwd_db
+
+- name: Convert uid to int
+  set_fact:
+    passwd_db: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | map('combine', {'value': {'uid': item.value.1 | int}}) | list }}"
+  loop: "{{ passwd_db.ansible_facts.getent_passwd | dict2items }}"
+  run_once: true
+  
 - name: Set ansible_users fact
   set_fact:
-    ansible_users: "{{ lookup('pipe', 'getent passwd | awk -F: \"$3 >= 1000 {print $1}\"') | list }}"
+    ansible_users: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | selectattr('value.1', 'ge', 1000) | map(attribute='key') | list }}"
 
 - name: Set wireguard clients to be all user above 1000
   set_fact:
