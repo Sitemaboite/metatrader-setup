@@ -152,7 +152,7 @@
   set_fact:
     wireguard_clients: "{{ users_output }}"
     wireguard_server_port: 51820
-    wireguard_server_address: "{{ ansible_default_ipv4.address }}"
+    wireguard_server_endpoint: "{{ ansible_default_ipv4.address }}"
     wireguard_client_dns: 1.1.1.1
 
 - name: Setup VPN
