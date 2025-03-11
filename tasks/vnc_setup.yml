@@ -1,6 +1,8 @@
 - name: Update apt cache
   apt:
     update_cache: yes
+    cache_valid_time: 3600
+    
 
 - name: Install required packages
   apt:
@@ -46,7 +48,7 @@
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
-    
+
 - name: Create VNC service file for user
   copy:
     dest: "/etc/systemd/system/vncserver@{{ metatrader_user }}.service"
