@@ -48,10 +48,16 @@
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
+  
+- name: Get user number (UID)
+  command: id -u {{ metatrader_user }}
+  register: user_uid
+  changed_when: false
+
 
 - name: Create VNC service file for user
   copy:
-    dest: "/etc/systemd/system/vncserver@{{ metatrader_user }}.service"
+    dest: "/etc/systemd/system/vncserver@{{ user_uid }}.service"
     content: |
       [Unit]
       Description=Remote desktop service (VNC)
@@ -70,11 +76,11 @@
 
 - name: Enable and start VNC service for user
   systemd:
-    name: "vncserver@{{ metatrader_user }}.service"
+    name: "vncserver@{{ user_uid }}.service"
     enabled: yes
     state: started
 
 - name: Ensure VNC service is running
   systemd:
-    name: "vncserver@{{ metatrader_user }}.service"
+    name: "vncserver@{{ user_uid }}.service"
     state: restarted
