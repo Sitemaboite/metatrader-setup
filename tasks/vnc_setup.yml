@@ -143,19 +143,17 @@
     database: passwd
   register: passwd_db
 
-- name: Convert uid to int
+- name: Create dict of UID -> username
   set_fact:
-    passwd_db: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | map('combine', {'value': {'uid': item.value.1 | int}}) | list }}"
-  loop: "{{ passwd_db.ansible_facts.getent_passwd | dict2items }}"
-  run_once: true
+    ansible_users: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | map('json_query', '{key: value[2], value: key}') | items2dict }}"
   
-- name: Set ansible_users fact
+- name: Convert dict to list of usernames
   set_fact:
-    ansible_users: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | selectattr('value.1', 'ge', 1000) | map(attribute='key') | list }}"
+    ansible_users_list: "{{ ansible_users.values() | list }}"
 
-- name: Set wireguard clients to be all user above 1000
+- name: Set wireguard clients to be all users above 1000
   set_fact:
-    wireguard_clients: "{{ ansible_users | dict2items | selectattr('value.uid', 'ge', 1000) | map(attribute='value.name') | list }}"
+    wireguard_clients: "{{ ansible_users | dict2items | selectattr('key', 'ge', '1000') | map(attribute='value') | list }}"
     wireguard_server_port: 51820
     wireguard_server_address: "{{ ansible_default_ipv4.address }}"
     wireguard_client_dns: 1.1.1.1
