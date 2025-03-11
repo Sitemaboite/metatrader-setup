@@ -1,0 +1,64 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - tigervnc-standalone-server
+      - tigervnc-common
+      - xfce4
+      - xfce4-goodies
+      - dbus-x11
+    state: present
+
+- name: Create VNC configuration directory for user
+  file:
+    path: "/home/{{ metatrader_user }}/.vnc"
+    state: directory
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+
+- name: Set VNC password for user
+  shell: |
+    echo "{{ vnc_password }}" | vncpasswd -f > /home/{{ metatrader_user }}/.vnc/passwd
+  args:
+    creates: "/home/{{ metatrader_user }}/.vnc/passwd"
+
+- name: Change ownership of VNC password file
+  file:
+    path: "/home/{{ metatrader_user }}/.vnc/passwd"
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0600'
+
+- name: Create VNC startup configuration file
+  copy:
+    dest: "/home/{{ metatrader_user }}/.vnc/xstartup"
+    content: |
+      #!/bin/bash
+      xrdb $HOME/.Xresources
+      if [ -z "$(pgrep -u {{ metatrader_user }} xfce4-session)" ]; then
+        startxfce4 &
+      fi
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+
+- name: Create VNC service file for user
+  template:
+    src: vncserver.service.j2
+    dest: "/etc/systemd/system/vncserver@{{ metatrader_user }}.service"
+    mode: '0644'
+
+- name: Enable and start VNC service for user
+  systemd:
+    name: "vncserver@{{ metatrader_user }}.service"
+    enabled: yes
+    state: started
+
+- name: Ensure VNC service is running
+  systemd:
+    name: "vncserver@{{ metatrader_user }}.service"
+    state: restarted

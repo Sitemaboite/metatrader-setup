@@ -1,0 +1,20 @@
+---
+- hosts: all
+  vars_prompt:
+
+    - name: metatrader_user
+      prompt: "Enter the MetaTrader user"
+      private: false
+      default: "metatrader"
+    
+    - name: vnc_password
+      prompt: "Enter the VNC password"
+      private: true
+      confirm: true
+  
+  tasks:
+    - name: Include tasks
+      ansible.builtin.import_tasks:
+        file: /opt/metatrader-setup/tasks/vnc_setup.yml
+  become: true
+  become_user: root
