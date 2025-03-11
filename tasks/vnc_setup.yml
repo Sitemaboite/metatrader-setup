@@ -2,7 +2,6 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
-    
 
 - name: Install required packages
   apt:
@@ -13,7 +12,16 @@
       - xfce4
       - xfce4-goodies
       - dbus-x11
+      - locales
     state: present
+
+- name: Generate locale
+  command: locale-gen en_US.UTF-8
+  changed_when: false
+
+- name: Set locale
+  command: update-locale LANG=en_US.UTF-8
+  changed_when: false
 
 - name: Create VNC configuration directory for user
   file:
@@ -42,13 +50,11 @@
     content: |
       #!/bin/bash
       xrdb $HOME/.Xresources
-      if [ -z "$(pgrep -u {{ metatrader_user }} xfce4-session)" ]; then
-        startxfce4 &
-      fi
+      startxfce4 &
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
-  
+
 - name: Get user number (UID)
   getent:
     database: passwd
@@ -61,7 +67,6 @@
     user_uid: "{{ user_info.ansible_facts.getent_passwd[metatrader_user][1] }}"
   changed_when: false
 
-
 - name: Create VNC service file for user
   copy:
     dest: "/etc/systemd/system/vncserver@{{ user_uid }}.service"
@@ -73,7 +78,9 @@
       [Service]
       Type=forking
       User={{ metatrader_user }}
-      ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :'
+      PAMName=login
+      PIDFile=/home/{{ metatrader_user }}/.vnc/%H%i.pid
+      ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
       ExecStart=/usr/bin/vncserver -geometry 1280x800 -depth 24 :%i
       ExecStop=/usr/bin/vncserver -kill :%i
 
