@@ -1,6 +1,5 @@
 [Interface]
 PrivateKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_privatekey') }}
-Address = {{ wireguard_client_address[item] }}
 DNS = {{ wireguard_client_dns }}
 
 [Peer]
