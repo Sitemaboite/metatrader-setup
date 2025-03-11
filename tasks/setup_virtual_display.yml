@@ -1,0 +1,32 @@
+- name: Install Xorg and dummy driver
+  ansible.builtin.package:
+    name:
+      - xorg-server
+      - xorg-x11-server-Xorg
+      - xorg-x11-drv-dummy
+    state: present
+
+- name: Install rustdesk
+  ansible.builtin.package:
+    name: rustdesk
+    state: present
+
+- name: Create systemd services for Xorg dummy and rustdesk
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: xorg-dummy.service.j2, dest: /etc/systemd/system/xorg-dummy@.service }
+    - { src: rustdesk.service.j2, dest: /etc/systemd/system/rustdesk@.service }
+
+- name: Enable and start Xorg dummy services
+  ansible.builtin.systemd:
+    name: "xorg-dummy@{{ metatrader_user }}.service"
+    enabled: yes
+    state: started
+
+- name: Enable and start rustdesk services
+  ansible.builtin.systemd:
+    name: "rustdesk@{{ metatrader_user }}.service"
+    enabled: yes
+    state: started

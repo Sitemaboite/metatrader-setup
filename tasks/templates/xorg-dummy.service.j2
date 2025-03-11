@@ -1,0 +1,11 @@
+[Unit]
+Description=Xorg Dummy Display %i
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/Xorg :%i -config /etc/X11/xorg.conf.d/%i-dummy.conf
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

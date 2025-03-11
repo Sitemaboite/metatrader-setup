@@ -1,0 +1,66 @@
+- name: Check that /opt/metatrader-setup/rustdesk_config.txt exists
+  ansible.builtin.stat:
+    path: /opt/metatrader-setup/rustdesk_config.txt
+  register: config_file
+  delegate_to: localhost
+
+- name: Fail if /opt/metatrader-setup/rustdesk_config.txt does not exist
+  ansible.builtin.fail:
+    msg: "File /opt/metatrader-setup/rustdesk_config.txt does not exist"
+  when: config_file.stat.exists == False
+  delegate_to: localhost
+
+- name: Get the content of /opt/metatrader-setup/rustdesk_config.txt
+  set_fact:
+    config_string: "{{ lookup('file', '/opt/metatrader-setup/rustdesk_config.txt') }}"
+  delegate_to: localhost
+
+- name: Install github3.py
+  ansible.builtin.pip:
+    name: github3.py
+    state: present
+  when: ansible_distribution != "Debian"
+  delegate_to: localhost
+
+- name: Install github3.py on Debian
+  ansible.builtin.command:
+    cmd: "pip install --break-system-packages github3.py"
+  when: ansible_distribution == "Debian"
+  delegate_to: localhost
+
+- name: Get latest release on GitHub of rustdesk
+  community.general.github_release:
+    user: rustdesk
+    repo: rustdesk
+    action: latest_release
+  register: rustdesk_release
+  delegate_to: localhost
+
+- name: Set package name
+  ansible.builtin.set_fact:
+    rustdesk_package: "rustdesk-{{ rustdesk_release.tag }}{{ '-0.' if ansible_os_family == 'RedHat' else '-' }}{{ ansible_architecture }}{{ '-suse' if ansible_os_family == 'Suse' }}.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}"
+
+- name: Download rustdesk
+  ansible.builtin.get_url:
+    url: "https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_release.tag }}/{{ rustdesk_package }}"
+    dest: "/tmp/{{ rustdesk_package }}"
+
+- name: Install rustdesk package (RedHat/SUSE)
+  ansible.builtin.yum:
+    name: "/tmp/{{ rustdesk_package }}"
+    state: present
+  when: ansible_os_family in ['RedHat', 'Suse']
+
+- name: Install rustdesk package (Debian)
+  ansible.builtin.apt:
+    deb: "/tmp/{{ rustdesk_package }}"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Enable headless mode
+  ansible.builtin.command:
+    cmd: "rustdesk --option allow-linux-headless Y"
+
+- name: Apply rustdesk configuration
+  ansible.builtin.command:
+    cmd: "rustdesk --config {{ config_string }}"

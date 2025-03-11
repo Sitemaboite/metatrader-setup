@@ -1,0 +1,13 @@
+[Unit]
+Description=RustDesk Remote Desktop %i
+After=xorg-dummy@%i.service
+Requires=xorg-dummy@%i.service
+
+[Service]
+ExecStart=/usr/bin/rustdesk --config {{ rustdesk_config_path }}
+Restart=always
+User=%i
+Environment=DISP
+
+[Install]
+WantedBy=multi-user.target
