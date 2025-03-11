@@ -49,8 +49,7 @@
     dest: "/home/{{ metatrader_user }}/.vnc/xstartup"
     content: |
       #!/bin/bash
-      xrdb $HOME/.Xresources
-      startxfce4 &
+      startxfce4
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
