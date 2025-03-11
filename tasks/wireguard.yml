@@ -12,7 +12,7 @@
     creates: /etc/wireguard/privatekey
 
 - name: Generate WireGuard public key
-  command: cat /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
+  shell: cat /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
   args:
     creates: /etc/wireguard/publickey
 
@@ -41,13 +41,13 @@
     mode: '0700'
 
 - name: Generate client keys
-  command: wg genkey | tee /etc/wireguard/clients/{{ item }}_privatekey
+  shell: wg genkey | tee /etc/wireguard/clients/{{ item }}_privatekey
   args:
     creates: /etc/wireguard/clients/{{ item }}_privatekey
   loop: "{{ wireguard_clients }}"
 
 - name: Generate client public keys
-  command: cat /etc/wireguard/clients/{{ item }}_privatekey | wg pubkey | tee /etc/wireguard/clients/{{ item }}_publickey
+  shell: cat /etc/wireguard/clients/{{ item }}_privatekey | wg pubkey | tee /etc/wireguard/clients/{{ item }}_publickey
   args:
     creates: /etc/wireguard/clients/{{ item }}_publickey
   loop: "{{ wireguard_clients }}"
