@@ -140,23 +140,8 @@
   
 - name: Set ansible_users fact
   set_fact:
-- name: Set ansible_users fact
-  set_fact:
-    ansible_users: >-
-      {{ ansible_facts.getent_passwd
-         | dict2items
-         | selectattr('value.1', 'ge', 1000)
-         | map(attribute='key')
-         | list }}
-  vars:
-    ansible_facts:
-      getent_passwd: >-
-        {{ ansible_facts.getent_passwd
-           | dict2items
-           | map(attribute='value')
-           | map('regex_replace', '^(.*?):x:([0-9]+):(.*)$', '\\1:x:\\2:\\3')
-           | map('from_yaml')
-           | items2dict }}
+    ansible_users: "{{ lookup('pipe', 'getent passwd | awk -F: \"{if ($3 >= 1000) print $1}\"') | split('\n') }}"
+
 
 - name: Set wireguard clients to be all user above 1000
   set_fact:
