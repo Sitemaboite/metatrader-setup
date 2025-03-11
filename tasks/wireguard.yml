@@ -60,14 +60,7 @@
   loop: "{{ wireguard_clients }}"
   loop_control:
     extended: true
-    extended_allitems: true # This is required to access the item variable in the template
-
-- name: Add client public keys to server configuration
-  lineinfile:
-    path: /etc/wireguard/wg0.conf
-    insertafter: '^# Client'
-    line: "[Peer]\nPublicKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_publickey') }}\nAllowedIPs = 0.0.0.0/0"
-  loop: "{{ wireguard_clients }}"
+    extended_allitems: true
 
 - name: Generate QR codes for client configurations
   command: qrencode -t png -o /etc/wireguard/clients/{{ item }}.png < /etc/wireguard/clients/{{ item }}.conf
