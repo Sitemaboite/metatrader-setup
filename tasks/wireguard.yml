@@ -1,6 +1,8 @@
-- name: Install WireGuard
+- name: Install WireGuard and qrencode
   apt:
-    name: wireguard
+    name:
+      - wireguard
+      - qrencode
     state: present
     update_cache: yes
 
@@ -64,6 +66,12 @@
     line: "[Peer]\nPublicKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_publickey') }}\nAllowedIPs = 0.0.0.0/0"
   loop: "{{ wireguard_clients }}"
   notify: Restart WireGuard
+
+- name: Generate QR codes for client configurations
+  command: qrencode -t png -o /etc/wireguard/clients/{{ item }}.png < /etc/wireguard/clients/{{ item }}.conf
+  args:
+    creates: /etc/wireguard/clients/{{ item }}.png
+  loop: "{{ wireguard_clients }}"
 
 - name: Restart WireGuard service
   systemd:
