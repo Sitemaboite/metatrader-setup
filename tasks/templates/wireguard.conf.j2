@@ -1,6 +1,6 @@
 [Interface]
 PrivateKey = {{ lookup('file', '/etc/wireguard/privatekey') }}
-Address = {{ wireguard_server_port }}
+Address = {{ wireguard_server_endpoint }}
 ListenPort = {{ wireguard_server_port }}
 
 # Server configuration
