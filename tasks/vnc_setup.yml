@@ -140,9 +140,14 @@
 
 - name: Retrieve users with UID above 1000
   shell:
-    cmd: "awk -F: '$3 > 1000 {print $1}' /etc/passwd"
+    cmd: "awk -F: '$3 >= 1000 {print $1}' /etc/passwd"
   register: users_output
 
+- name: Remove nobody from the list of users
+  set_fact:
+    users_output: "{{ users_output.stdout_lines | difference(['nobody']) }}"
+  changed_when: false
+  
 - name: Display the list of users
   debug:
     msg: "Users with UID above 1000: {{ users_output.stdout_lines }}"
