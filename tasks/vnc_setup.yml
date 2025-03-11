@@ -137,23 +137,18 @@
   systemd:
     name: avahi-daemon
     state: restarted
-  
-- name: Get passwd database
-  getent:
-    database: passwd
-  register: passwd_db
 
-- name: Create dict of UID -> username
-  set_fact:
-    ansible_users: "{{ passwd_db.ansible_facts.getent_passwd | dict2items | map('json_query', '{key: value[2], value: key}') | items2dict }}"
-  
-- name: Convert dict to list of usernames
-  set_fact:
-    ansible_users_list: "{{ ansible_users.values() | list }}"
+- name: Retrieve users with UID above 1000
+  shell:
+    cmd: "awk -F: '$3 > 1000 {print $1}' /etc/passwd"
+  register: users_output
 
+- name: Display the list of users
+  debug:
+    msg: "Users with UID above 1000: {{ users_output.stdout_lines }}"
 - name: Set wireguard clients to be all users above 1000
   set_fact:
-    wireguard_clients: "{{ ansible_users | dict2items | selectattr('key', 'ge', '1000') | map(attribute='value') | list }}"
+    wireguard_clients: "{{ users_output.stdout_lines }}"
     wireguard_server_port: 51820
     wireguard_server_address: "{{ ansible_default_ipv4.address }}"
     wireguard_client_dns: 1.1.1.1
