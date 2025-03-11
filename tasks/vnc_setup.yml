@@ -139,10 +139,7 @@
     state: restarted
 - name: Set ansible_users fact
   set_fact:
-    ansible_users: "{{ ansible_facts.getent_passwd | dict2items | selectattr('value.1' , 'ge', 1000) | map(attribute='key') | list }}"
-  vars:
-    ansible_facts:
-      getent_passwd: "{{ ansible_facts.getent_passwd | dict2items | map('set_fact', {'key': item.key, 'value': [item.value[0], item.value[1] | int, item.value[2], item.value[3]]}) | items2dict }}"
+    ansible_users: "{{ ansible_facts.getent_passwd | dict2items | selectattr('value.1' | int, 'ge', 1000 | int) | map(attribute='key') | list }}"
 
 - name: Set wireguard clients to be all user above 1000
   set_fact:
