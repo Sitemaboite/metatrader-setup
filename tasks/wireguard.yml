@@ -65,7 +65,6 @@
     insertafter: '^# Client'
     line: "[Peer]\nPublicKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_publickey') }}\nAllowedIPs = 0.0.0.0/0"
   loop: "{{ wireguard_clients }}"
-  notify: Restart WireGuard
 
 - name: Generate QR codes for client configurations
   command: qrencode -t png -o /etc/wireguard/clients/{{ item }}.png < /etc/wireguard/clients/{{ item }}.conf
