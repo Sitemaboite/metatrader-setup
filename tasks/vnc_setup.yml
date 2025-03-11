@@ -46,11 +46,24 @@
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
-
+    
 - name: Create VNC service file for user
-  template:
-    src: vncserver.service.j2
+  copy:
     dest: "/etc/systemd/system/vncserver@{{ metatrader_user }}.service"
+    content: |
+      [Unit]
+      Description=Remote desktop service (VNC)
+      After=syslog.target network.target
+
+      [Service]
+      Type=forking
+      User={{ metatrader_user }}
+      ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :'
+      ExecStart=/usr/bin/vncserver -geometry 1280x800 -depth 24 :%i
+      ExecStop=/usr/bin/vncserver -kill :%i
+
+      [Install]
+      WantedBy=multi-user.target
     mode: '0644'
 
 - name: Enable and start VNC service for user
