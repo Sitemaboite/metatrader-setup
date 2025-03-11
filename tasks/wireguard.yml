@@ -60,8 +60,6 @@
   loop: "{{ wireguard_clients }}"
   loop_control:
     extended: true
-    extended_allitems: false
-
 
 - name: Add client public keys to server configuration
   lineinfile:
