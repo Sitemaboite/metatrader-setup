@@ -66,26 +66,26 @@
     group: "{{ metatrader_user }}"
     mode: '0755'
 
-- name: Generate self-signed certificate
+- name: Generate self-signed certificate for user
   command: >
     openssl req -x509 -nodes -newkey rsa:2048
-    -keyout /etc/ssl/private/vnc-server-key.pem
-    -out /etc/ssl/certs/vnc-server-cert.pem
+    -keyout /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem
+    -out /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
     -days 365
     -subj "/CN=10.0.0.1"
     -addext "subjectAltName=IP:10.0.0.1"
   args:
-    creates: /etc/ssl/certs/vnc-server-cert.pem
+    creates: /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
 
-- name: Set permission on certificate files to be read-only
+- name: Set permission on certificate files to be read-only for user
   file:
     path: "{{ item }}"
     mode: '0644'
-    owner: root
-    group: root
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
   with_items:
-    - /etc/ssl/certs/vnc-server-cert.pem
-    - /etc/ssl/private/vnc-server-key.pem
+    - /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
+    - /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem
 
 - name: Get user number (UID)
   getent:
@@ -116,9 +116,9 @@
       User={{ metatrader_user }}
       Group={{ metatrader_user }}
       WorkingDirectory=/home/{{ metatrader_user }}
-      PIDFile=/home/{{ metatrader_user }}/.vnc/%H%i.pid
+      PIDFile=/home/{{ metatrader_user }}/.vnc/%i.pid
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /etc/ssl/private/vnc-server-key.pem -X509Cert /etc/ssl/certs/vnc-server-cert.pem -SecurityTypes X509Vnc
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem -X509Cert /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem -SecurityTypes X509Vnc
       ExecStop=/usr/bin/vncserver -kill :%i
       Restart=always
       RestartSec=10
