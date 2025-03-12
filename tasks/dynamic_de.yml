@@ -1,9 +1,49 @@
+- name: Create restricted group
+  ansible.builtin.group:
+    name: "{{ metatrader_restricted_group }}"
+    state: present
+
+- name: Add user to restricted group
+  ansible.builtin.user:
+    name: "{{ metatrader_user }}"
+    group: "{{ metatrader_restricted_group }}"
+    append: true
+  when: metatrader_restricted
+
+- name: Set lightdm as default login manager
+  ansible.builtin.debconf:
+    name: lightdm
+    question: lightdm/daemon_name
+    vtype: string
+    value: lightdm
+
+- name: Set /etc/X11/default-display-manager to lightdm
+  ansible.builtin.copy:
+    content: /usr/sbin/lightdm
+    dest: /etc/X11/default-display-manager
+    owner: root
+    group: root
+    mode: '0644'
+  failed_when: false
+
+
+- name: Install xfce
+  ansible.builtin.include_role:
+    name: webofmars.xfce4-desktop
+  vars:
+    xfce4_login_manager_package: lightdm
+    xfce4_login_manager_service: lightdm
+    xfce4_packages:
+      - xserver-xorg
+      - xfonts-base
+      - xfce4
+      - xfce4-goodies
+
 - name: Install openbox lightdm and xfce4
   apt:
     name:
       - openbox
       - lightdm
-      - xfce4
     state: present
     update_cache: yes
 
