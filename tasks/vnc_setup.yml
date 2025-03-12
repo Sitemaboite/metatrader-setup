@@ -41,7 +41,7 @@
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
-    
+
 
 - name: Set VNC password for user
   shell: |
@@ -61,7 +61,7 @@
     dest: "/home/{{ metatrader_user }}/.vnc/xstartup"
     content: |
       #!/bin/bash
-      startxfce4 &
+      startxfce4
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
