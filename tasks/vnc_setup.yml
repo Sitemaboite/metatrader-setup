@@ -61,7 +61,7 @@
     dest: "/home/{{ metatrader_user }}/.vnc/xstartup"
     content: |
       #!/bin/bash
-      startxfce4
+      /usr/local/bin/main_script.sh
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'

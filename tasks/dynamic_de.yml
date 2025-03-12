@@ -1,0 +1,76 @@
+- name: Remove existing .desktop files except custom_de.desktop
+  find:
+    paths: /usr/share/xsessions/
+    patterns: '*.desktop'
+    excludes: 'custom_de.desktop'
+  register: desktop_files
+
+- name: Delete found .desktop files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ desktop_files.files }}"
+
+- name: Copy main script
+  copy:
+    src: files/main_de.sh
+    dest: /usr/local/bin/main_script.sh
+    mode: '0755'
+
+- name: Copy restricted DE script
+  copy:
+    src: files/restricted_de.sh
+    dest: /usr/local/bin/restricted_de.sh
+    mode: '0755'
+
+- name: Copy admin DE script
+  copy:
+    src: files/admin_de.sh
+    dest: /usr/local/bin/admin_de.sh
+    mode: '0755'
+
+- name: Create new custom_de.desktop file if it doesn't exist
+  copy:
+    dest: /usr/share/xsessions/custom_de.desktop
+    content: |
+      [Desktop Entry]
+      Name=Custom DE
+      Comment=Custom Display Environment
+      Exec=/usr/local/bin/main_script.sh
+      TryExec=/usr/local/bin/main_script.sh
+      Type=Application
+  
+- name: Set the scrpt to be default session manager
+  ansible.builtin.alternatives:
+    name: x-session-manager
+    path: /usr/local/bin/main_script.sh
+    link: /usr/bin/x-session-manager
+    priority: 60
+
+- name: Ensure the main script is executable
+  file:
+    path: /usr/local/bin/main_script.sh
+    mode: '0755'
+
+- name: Ensure the restricted DE script is executable
+  file:
+    path: /usr/local/bin/restricted_de.sh
+    mode: '0755'
+
+- name: Ensure the admin DE script is executable
+  file:
+    path: /usr/local/bin/admin_de.sh
+    mode: '0755'
+
+- name: Remove Openbox menu configuration file
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/xdg/openbox/menu.xml
+    - ~/.config/openbox/menu.xml
+
+- name: Ensure Openbox autostart directory exists
+  file:
+    path: ~/.config/openbox
+    state: directory

@@ -15,6 +15,9 @@
   tasks:
     - name: Include tasks
       ansible.builtin.import_tasks:
+        file: /opt/metatrader-setup/tasks/dynamic_de.yml
+    - name: Include tasks
+      ansible.builtin.import_tasks:
         file: /opt/metatrader-setup/tasks/vnc_setup.yml
   become: true
   become_user: root
