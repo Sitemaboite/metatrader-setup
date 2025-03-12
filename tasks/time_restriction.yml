@@ -44,10 +44,10 @@
   register: current_date
   changed_when: false
 
-- name: Close in 1 minute from now
+- name: Close in 2 minute from now (minimum to avoid error)
   cron:
     name: "automatic close access {{ metatrader_user }}"
-    minute: "{{ (current_date.stdout | to_datetime).minute + 1 }}"
+    minute: "{{ (current_date.stdout | to_datetime).minute + 2 }}"
     hour: "{{ (current_date.stdout | to_datetime).hour }}"
     day: "{{ (current_date.stdout | to_datetime).day }}"
     month: "{{ (current_date.stdout | to_datetime).month }}"
