@@ -45,5 +45,13 @@
       loop_control:
         loop_var: metatrader_profile
       when: metatrader_restricted == false
+    
+    - name: Show login information
+      ansible.builtin.debug:
+        msg: |
+          Login information:
+          User: {{ metatrader_user }}
+          Password: {{ vnc_password }}
+          Port: {{ vnc_port }}
   become: true
   become_user: root
