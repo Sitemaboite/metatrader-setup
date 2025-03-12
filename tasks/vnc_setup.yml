@@ -69,23 +69,23 @@
 - name: Generate self-signed certificate for user
   command: >
     openssl req -x509 -nodes -newkey rsa:2048
-    -keyout /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem
-    -out /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
+    -keyout /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem
+    -out /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem
     -days 365
     -subj "/CN=10.0.0.1"
     -addext "subjectAltName=IP:10.0.0.1"
   args:
-    creates: /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
+    creates: /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem
 
 - name: Set permission on certificate files to be read-only for user
   file:
     path: "{{ item }}"
-    mode: '0644'
+    mode: '0600'
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
   with_items:
-    - /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem
-    - /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem
+    - /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem
+    - /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem
 
 - name: Get user number (UID)
   getent:
@@ -118,7 +118,7 @@
       WorkingDirectory=/home/{{ metatrader_user }}
       PIDFile=/home/{{ metatrader_user }}/.vnc/%i.pid
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /etc/ssl/private/vnc-server-key-{{ metatrader_user }}.pem -X509Cert /etc/ssl/certs/vnc-server-cert-{{ metatrader_user }}.pem -SecurityTypes X509Vnc
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem -X509Cert /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem -SecurityTypes X509Vnc
       ExecStop=/usr/bin/vncserver -kill :%i
       Restart=always
       RestartSec=10
