@@ -107,6 +107,9 @@
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
       ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no
       ExecStop=/usr/bin/vncserver -kill :%i
+      Restart=always
+      RestartSec=10
+      WatchdogSec=30
 
       [Install]
       WantedBy=multi-user.target
