@@ -6,5 +6,5 @@ Address = 10.0.0.{{ ansible_loop.index + 2 }}/24
 [Peer]
 PublicKey = {{ lookup('file', '/etc/wireguard/publickey') }}
 Endpoint = {{ wireguard_server_endpoint }}:{{ wireguard_server_port }}
-AllowedIPs = 0.0.0.0/0
+AllowedIPs = 10.0.0.1/32
 PersistentKeepalive = 25
