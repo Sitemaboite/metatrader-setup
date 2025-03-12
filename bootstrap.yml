@@ -30,7 +30,7 @@
     
     - name: Install pip dependencies
       ansible.builtin.command:
-        cmd: "pip install --break-system-packages {{ pip_dependency }}"
+        cmd: "pip install --break-system-packages {{ pip_dependency | join(' ') }}"
       when: ansible_distribution == "Debian"
     
     - name: Install ansible requirements
