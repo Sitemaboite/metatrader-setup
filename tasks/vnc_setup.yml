@@ -1,16 +1,31 @@
 - name: Update apt cache
   apt:
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: Install required packages
   apt:
     name:
       - tigervnc-standalone-server
       - tigervnc-common
+      - tigervnc-tools
       - xfce4
       - xfce4-goodies
       - dbus-x11
+      - locales
+      - avahi-daemon
+      - libnss-mdns
+      - openssl
+      - iptables-persistent
     state: present
+
+- name: Generate locale
+  command: locale-gen en_US.UTF-8
+  changed_when: false
+
+- name: Set locale
+  command: update-locale LANG=en_US.UTF-8
+  changed_when: false
 
 - name: Create VNC configuration directory for user
   file:
@@ -19,6 +34,14 @@
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
+
+- name: Set permission on home directory
+  file:
+    path: "/home/{{ metatrader_user }}"
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+
 
 - name: Set VNC password for user
   shell: |
@@ -38,27 +61,135 @@
     dest: "/home/{{ metatrader_user }}/.vnc/xstartup"
     content: |
       #!/bin/bash
-      xrdb $HOME/.Xresources
-      if [ -z "$(pgrep -u {{ metatrader_user }} xfce4-session)" ]; then
-        startxfce4 &
-      fi
+      startxfce4
     owner: "{{ metatrader_user }}"
     group: "{{ metatrader_user }}"
     mode: '0755'
 
+- name: Generate self-signed certificate
+  command: >
+    openssl req -x509 -nodes -newkey rsa:2048
+    -keyout /etc/ssl/private/vnc-server-key.pem
+    -out /etc/ssl/certs/vnc-server-cert.pem
+    -days 365
+    -subj "/C=US/ST=State/L=City/O=Organization/CN=vnc.example.com"
+  args:
+    creates: /etc/ssl/certs/vnc-server-cert.pem
+
+- name: Get user number (UID)
+  getent:
+    database: passwd
+    key: "{{ metatrader_user }}"
+  register: user_info
+  changed_when: false
+
+- name: Set user UID fact
+  set_fact:
+    user_uid: "{{ user_info.ansible_facts.getent_passwd[metatrader_user][1] }}"
+  changed_when: false
+
+- name: Calculate VNC port
+  set_fact:
+    vnc_port: "{{ 5900 + user_uid | int - 1000 }}"
+
 - name: Create VNC service file for user
-  template:
-    src: vncserver.service.j2
-    dest: "/etc/systemd/system/vncserver@{{ metatrader_user }}.service"
+  copy:
+    dest: "/etc/systemd/system/vncserver@{{ user_uid }}.service"
+    content: |
+      [Unit]
+      Description=Remote desktop service (VNC)
+      After=syslog.target network.target
+
+      [Service]
+      Type=simple
+      User={{ metatrader_user }}
+      PAMName=login
+      ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no
+      ExecStop=/usr/bin/vncserver -kill :%i
+
+      [Install]
+      WantedBy=multi-user.target
     mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
 
 - name: Enable and start VNC service for user
   systemd:
-    name: "vncserver@{{ metatrader_user }}.service"
+    name: "vncserver@{{ user_uid }}.service"
     enabled: yes
     state: started
 
 - name: Ensure VNC service is running
   systemd:
-    name: "vncserver@{{ metatrader_user }}.service"
+    name: "vncserver@{{ user_uid }}.service"
     state: restarted
+
+- name: Create Bonjour service file for VNC
+  copy:
+    dest: "/etc/avahi/services/vnc-{{ metatrader_user }}.service"
+    content: |
+      <?xml version="1.0" standalone='no'?>
+      <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+      <service-group>
+        <name replace-wildcards="yes">VNC Server for {{ metatrader_user }} on %h</name>
+        <service>
+          <type>_rfb._tcp</type>
+          <port>{{ vnc_port }}</port>
+        </service>
+      </service-group>
+    mode: '0644'
+
+- name: Restart Avahi daemon
+  systemd:
+    name: avahi-daemon
+    state: restarted
+
+- name: Retrieve users with UID above 1000
+  shell:
+    cmd: "awk -F: '$3 >= 1000 {print $1}' /etc/passwd"
+  register: users_output
+
+- name: Remove nobody from the list of users
+  set_fact:
+    users_output: "{{ users_output.stdout_lines | difference(['nobody']) }}"
+  changed_when: false
+- name: Allow connect to VNC from the local network
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ vnc_port }}"
+    jump: ACCEPT
+    source: '10.0.0.0/24'
+    state: present
+    comment: "Allow connect to VNC from the local network"
+
+- name: Prevent connect to VNC from the internet
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ vnc_port }}"
+    jump: DROP
+    state: present
+    comment: "Prevent connect to VNC from the internet"
+  
+
+- name: mkdir /etc/iptables
+  file: path=/etc/iptables state=directory
+
+- name: Save iptables rules
+  shell: iptables-save > /etc/iptables/rules.v4
+  args:
+    creates: /etc/iptables/rules.v4
+
+- name: Set wireguard clients to be all users above 1000
+  set_fact:
+    wireguard_clients: "{{ users_output }}"
+    wireguard_server_port: 51820
+    wireguard_server_endpoint: "{{ ansible_default_ipv4.address }}"
+    wireguard_client_dns: 1.1.1.1
+
+- name: Setup VPN
+  include_tasks: wireguard.yml

@@ -1,0 +1,73 @@
+- name: Install WireGuard and qrencode
+  apt:
+    name:
+      - wireguard
+      - qrencode
+    state: present
+    update_cache: yes
+
+- name: Generate WireGuard private key
+  shell: wg genkey | tee /etc/wireguard/privatekey
+  args:
+    creates: /etc/wireguard/privatekey
+
+- name: Generate WireGuard public key
+  shell: cat /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
+  args:
+    creates: /etc/wireguard/publickey
+
+- name: Create WireGuard configuration directory
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+
+- name: Create client configuration directory
+  file:
+    path: /etc/wireguard/clients
+    state: directory
+    mode: '0700'
+
+- name: Generate client keys
+  shell: wg genkey | tee /etc/wireguard/clients/{{ item }}_privatekey
+  args:
+    creates: /etc/wireguard/clients/{{ item }}_privatekey
+  loop: "{{ wireguard_clients }}"
+
+- name: Generate client public keys
+  shell: cat /etc/wireguard/clients/{{ item }}_privatekey | wg pubkey | tee /etc/wireguard/clients/{{ item }}_publickey
+  args:
+    creates: /etc/wireguard/clients/{{ item }}_publickey
+  loop: "{{ wireguard_clients }}"
+
+- name: Create WireGuard configuration file
+  template:
+    src: wireguard.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    
+- name: Enable and start WireGuard service
+  systemd:
+    name: wg-quick@wg0
+    enabled: yes
+    state: started
+
+- name: Create client configuration files
+  template:
+    src: client.conf.j2
+    dest: /etc/wireguard/clients/{{ item }}.conf
+    mode: '0600'
+  loop: "{{ wireguard_clients }}"
+  loop_control:
+    extended: true
+    extended_allitems: true
+
+- name: Generate QR codes for client configurations
+  command: qrencode -t png -o /etc/wireguard/clients/{{ item }}.png < /etc/wireguard/clients/{{ item }}.conf
+  args:
+    creates: /etc/wireguard/clients/{{ item }}.png
+  loop: "{{ wireguard_clients }}"
+
+- name: Restart WireGuard service
+  systemd:
+    name: wg-quick@wg0
+    state: restarted
