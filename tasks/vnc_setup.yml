@@ -103,9 +103,10 @@
       [Service]
       Type=simple
       User={{ metatrader_user }}
+      Group=ssl-cert
       PAMName=login
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd -X509Cert /etc/ssl/certs/vnc-server-cert.pem -X509Key /etc/ssl/private/vnc-server-key.pem :%i -fg -localhost no
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no
       ExecStop=/usr/bin/vncserver -kill :%i
 
       [Install]
