@@ -112,13 +112,13 @@
       After=syslog.target network.target
 
       [Service]
-      Type=forking
+      Type=simple
       User={{ metatrader_user }}
       Group={{ metatrader_user }}
       WorkingDirectory=/home/{{ metatrader_user }}
       PIDFile=/home/{{ metatrader_user }}/.vnc/%i.pid
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem -X509Cert /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem -SecurityTypes X509Vnc
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem -X509Cert /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem -SecurityTypes X509Vnc -fg
       ExecStop=/usr/bin/vncserver -kill :%i
       Restart=always
       RestartSec=10
