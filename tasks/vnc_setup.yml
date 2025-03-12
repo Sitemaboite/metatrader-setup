@@ -35,6 +35,14 @@
     group: "{{ metatrader_user }}"
     mode: '0755'
 
+- name: Set permission on home directory
+  file:
+    path: "/home/{{ metatrader_user }}"
+    owner: "{{ metatrader_user }}"
+    group: "{{ metatrader_user }}"
+    mode: '0755'
+    
+
 - name: Set VNC password for user
   shell: |
     echo "{{ vnc_password }}" | vncpasswd -f > /home/{{ metatrader_user }}/.vnc/passwd
