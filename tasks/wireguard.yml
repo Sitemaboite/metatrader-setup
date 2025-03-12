@@ -43,7 +43,7 @@
 - name: Create WireGuard configuration file
   template:
     src: wireguard.conf.j2
-    dest: /etc/wireguard/wg0.c
+    dest: /etc/wireguard/wg0.conf
     
 - name: Enable and start WireGuard service
   systemd:
