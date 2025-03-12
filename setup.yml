@@ -28,6 +28,7 @@
     - name: Convert restricted to boolean
       set_fact:
         metatrader_restricted: "{{ metatrader_restricted | bool }}"
+        vnc_password: "{{ metatrader_password }}"
 
   tasks:
     - name: import role
