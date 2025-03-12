@@ -31,7 +31,7 @@
     - name: Install pip dependencies
       ansible.builtin.command:
         cmd: "pip install --break-system-packages {{ pip_dependency }}"
-      when: ansible_distribution != "Debian"
+      when: ansible_distribution == "Debian"
     
     - name: Install ansible requirements
       community.general.ansible_galaxy_install:
