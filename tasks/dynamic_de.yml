@@ -1,3 +1,12 @@
+- name: Install openbox lightdm and xfce4
+  apt:
+    name:
+      - openbox
+      - lightdm
+      - xfce4
+    state: present
+    update_cache: yes
+
 - name: Remove existing .desktop files except custom_de.desktop
   find:
     paths: /usr/share/xsessions/
