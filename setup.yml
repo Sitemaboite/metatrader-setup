@@ -34,6 +34,9 @@
     - name: import role
       ansible.builtin.import_role:
         name: lpi-code.metatrader
+    - name: Include task
+      ansible.builtin.include_tasks:
+        file: /opt/metatrader-setup/tasks/dynamic_de.yml
     - name: Include tasks
       ansible.builtin.include_tasks:
         file: /opt/metatrader-setup/tasks/vnc_setup.yml
