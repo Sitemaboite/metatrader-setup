@@ -16,6 +16,7 @@
       - avahi-daemon
       - libnss-mdns
       - openssl
+      - iptables-persistent
     state: present
 
 - name: Generate locale
@@ -174,12 +175,6 @@
   shell: iptables-save > /etc/iptables/rules.v4
   args:
     creates: /etc/iptables/rules.v4
-
-- name: Restore iptables rules on boot
-  copy:
-    src: /etc/iptables.rules.v4
-    dest: /etc/network/if-pre-up.d/iptables
-    mode: '0755'
 
 - name: Set wireguard clients to be all users above 1000
   set_fact:
