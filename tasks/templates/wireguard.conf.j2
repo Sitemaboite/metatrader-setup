@@ -14,7 +14,9 @@ PostDown = iptables -D FORWARD -i %i -j ACCEPT
 PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 {% for item in wireguard_clients %}
+{% if lookup('file', '/etc/wireguard/clients/' + item + '_publickey', errors='ignore') %}
 [Peer]
 PublicKey = {{ lookup('file', '/etc/wireguard/clients/' + item + '_publickey') }}
 AllowedIPs = 10.0.0.{{ loop.index + 2 }}/32
+{% endif %}
 {% endfor %}
