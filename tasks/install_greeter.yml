@@ -4,6 +4,7 @@
     name:
       - lightdm
       - slick-greeter
+      - xserver-xorg-video-dummy
     state: present
   become: true
 
