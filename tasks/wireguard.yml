@@ -22,12 +22,6 @@
     state: directory
     mode: '0700'
 
-- name: Create WireGuard configuration file
-  template:
-    src: wireguard.conf.j2
-    dest: /etc/wireguard/wg0.conf
-    mode: '0600'
-
 - name: Enable and start WireGuard service
   systemd:
     name: wg-quick@wg0
@@ -51,6 +45,12 @@
   args:
     creates: /etc/wireguard/clients/{{ item }}_publickey
   loop: "{{ wireguard_clients }}"
+
+- name: Create WireGuard configuration file
+  template:
+    src: wireguard.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: '0600'
 
 - name: Create client configuration files
   template:
