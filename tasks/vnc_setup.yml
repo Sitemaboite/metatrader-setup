@@ -152,7 +152,7 @@
   iptables:
     chain: INPUT
     protocol: tcp
-    to_ports: "{{ vnc_port }}"
+    destination_port: "{{ vnc_port }}"
     jump: DROP
     state: present
     comment: "Prevent connect to VNC from the internet"
@@ -161,7 +161,7 @@
   iptables:
     chain: INPUT
     protocol: tcp
-    to_ports: "{{ vnc_port }}"
+    destination_port: "{{ vnc_port }}"
     jump: ACCEPT
     source: '10.0.0.0/24'
     state: present
