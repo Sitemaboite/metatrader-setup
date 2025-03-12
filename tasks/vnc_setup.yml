@@ -116,7 +116,7 @@
       User={{ metatrader_user }}
       PAMName=login
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no -X509Key /etc/ssl/private/vnc-server-key.pem -X509Cert /etc/ssl/certs/vnc-server-cert.pem
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no -X509Key /etc/ssl/private/vnc-server-key.pem -X509Cert /etc/ssl/certs/vnc-server-cert.pem -SecurityTypes X509Vnc
       ExecStop=/usr/bin/vncserver -kill :%i && rm -rf /tmp/.X%i-lock /tmp/.X11-unix/X%i
       Restart=always
       RestartSec=10
