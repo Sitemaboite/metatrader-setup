@@ -72,7 +72,8 @@
     -keyout /etc/ssl/private/vnc-server-key.pem
     -out /etc/ssl/certs/vnc-server-cert.pem
     -days 365
-    -subj "/C=US/ST=State/L=City/O=Organization/CN=vnc.example.com"
+    -subj "/CN=10.0.0.1"
+    -addext "subjectAltName=IP:10.0.0.1
   args:
     creates: /etc/ssl/certs/vnc-server-cert.pem
 
@@ -116,7 +117,7 @@
       PAMName=login
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
       ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -fg -localhost no -X509Key /etc/ssl/private/vnc-server-key.pem -X509Cert /etc/ssl/certs/vnc-server-cert.pem
-      ExecStop=/usr/bin/vncserver -kill :%i
+      ExecStop=/usr/bin/vncserver -kill :%i && rm -rf /tmp/.X%i-lock /tmp/.X11-unix/X%i
       Restart=always
       RestartSec=10
       WatchdogSec=30
