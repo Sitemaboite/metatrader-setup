@@ -1,0 +1,38 @@
+---
+- name: Install LightDM and slick-greeter
+  apt:
+    name:
+      - lightdm
+      - lightdm-slick-greeter
+    state: present
+  become: true
+
+- name: Configure slick-greeter as default
+  lineinfile:
+    path: /etc/lightdm/lightdm.conf
+    line: "greeter-session=slick-greeter"
+    create: yes
+  become: true
+
+- name: Ensure wallpaper directory exists
+  file:
+    path: /usr/share/backgrounds
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Configure slick-greeter settings
+  copy:
+    dest: /etc/lightdm/slick-greeter.conf
+    content: |
+      [Greeter]
+      background=/usr/share/backgrounds/default.jpg
+      draw-grid=false
+    mode: '0644'
+  become: true
+
+- name: Restart LightDM
+  service:
+    name: lightdm
+    state: restarted
+  become: true

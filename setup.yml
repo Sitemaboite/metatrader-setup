@@ -47,6 +47,10 @@
         loop_var: metatrader_profile
       when: metatrader_restricted == false
     
+    - name: Install greeter
+      ansible.builtin.include_tasks:
+        file: /opt/metatrader-setup/tasks/install_greeter.yml
+    
     - name: Show login information
       ansible.builtin.debug:
         msg: |
