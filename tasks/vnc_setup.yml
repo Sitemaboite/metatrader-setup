@@ -96,7 +96,7 @@
       User={{ metatrader_user }}
       PAMName=login
       ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1 || :
-      ExecStart=/usr/bin/vncserver -geometry 1280x800 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd -X509Cert /etc/ssl/certs/vnc-server-cert.pem -X509Key /etc/ssl/private/vnc-server-key.pem :%i -fg
+      ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd -X509Cert /etc/ssl/certs/vnc-server-cert.pem -X509Key /etc/ssl/private/vnc-server-key.pem :%i -fg -localhost no
       ExecStop=/usr/bin/vncserver -kill :%i
 
       [Install]
@@ -147,6 +147,30 @@
   set_fact:
     users_output: "{{ users_output.stdout_lines | difference(['nobody']) }}"
   changed_when: false
+
+- name: Prevent connect to VNC from the internet
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    dport: "{{ vnc_port }}"
+    jump: DROP
+    state: present
+    comment: "Prevent connect to VNC from the internet"
+  
+- name: Allow connect to VNC from the local network
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    dport: "{{ vnc_port }}"
+    jump: ACCEPT
+    source: '10.0.0.0/24'
+    state: present
+    comment: "Allow connect to VNC from the local network"
+
+- name: Save iptables rules
+  command: iptables-save > /etc/iptables/rules.v4
+  args:
+    creates: /etc/iptables/rules.v4
 
 - name: Set wireguard clients to be all users above 1000
   set_fact:
