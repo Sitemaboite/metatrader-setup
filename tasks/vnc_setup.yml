@@ -168,7 +168,7 @@
     comment: "Allow connect to VNC from the local network"
 
 - name: Save iptables rules
-  command: iptables-save > /etc/iptables/rules.v4
+  shell: iptables-save > /etc/iptables/rules.v4
   args:
     creates: /etc/iptables/rules.v4
 
