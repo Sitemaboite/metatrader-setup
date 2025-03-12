@@ -3,7 +3,7 @@
   apt:
     name:
       - lightdm
-      - lightdm-slick-greeter
+      - slick-greeter
     state: present
   become: true
 
