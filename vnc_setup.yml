@@ -11,10 +11,28 @@
       prompt: "Enter the VNC password"
       private: true
       confirm: true
-  
+    
+    - name: metatrader_restricted
+      prompt: "Is the user restricted (non-admin) ?"
+      private: false
+      default: false
+  pre_tasks:
+    - name: Convert restricted to boolean
+      ansible.builtin.set_fact:
+        metatrader_restricted: "{{ metatrader_restricted | bool }}"
   tasks:
     - name: Include tasks
       ansible.builtin.import_tasks:
+        file: /opt/metatrader-setup/tasks/dynamic_de.yml
+    - name: Include tasks
+      ansible.builtin.import_tasks:
         file: /opt/metatrader-setup/tasks/vnc_setup.yml
+    - name: Show login information
+      ansible.builtin.debug:
+        msg: |
+          Login information:
+          User: {{ metatrader_user }}
+          Password: {{ vnc_password }}
+          Port: {{ vnc_port }}
   become: true
   become_user: root

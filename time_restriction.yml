@@ -11,7 +11,19 @@
       prompt: "Enter the date in iso format at which the equipment will be unblocked"
       private: false
       default: 0
-  
+    
+    - name: metatrader_user
+      prompt: "Enter the MetaTrader user to block"
+      private: false
+      default: "metatrader"
+  pre_tasks:
+    - name: Get user id
+      command: id -u {{ metatrader_user }}
+      register: metatrader_user_id
+      changed_when: false
+    - name: Set user id fact
+      set_fact:
+        metatrader_user_id: "{{ metatrader_user_id.stdout }}"
   tasks:
     - name: Include tasks
       ansible.builtin.import_tasks:

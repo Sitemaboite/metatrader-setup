@@ -10,7 +10,7 @@ ask_and_run_ansible(){
     echo "2) Full Installation (setup.yml)"
     echo "3) Time restriction only (time.yml)"
     echo "4) VNC setup only (vnc.yml)"
-    read -p "Enter choice (1, 2 or 3): " choice
+    read -p "Enter choice (1 - 4): " choice
 
     case $choice in
         1) PLAYBOOK="gh_setup.yml" ;;

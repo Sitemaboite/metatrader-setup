@@ -26,14 +26,14 @@
 
 - name: Set automatic open access
   cron:
-    name: "automatic open access"
+    name: "automatic open access {{ metatrader_user }}"
     minute: "{{ (unblock_date | to_datetime).minute }}"
     hour: "{{ (unblock_date | to_datetime).hour }}"
     day: "{{ (unblock_date | to_datetime).day }}"
     month: "{{ (unblock_date | to_datetime).month }}"
     job: >
-      iptables -F &&
-      crontab -l | grep -v "automatic open access" | crontab -
+      systemctl start vncserver@{{ metatrader_user_id }}.service &&
+      crontab -l | grep -v "automatic open access {{ metatrader_user }}" | crontab -
     user: root
     state: present
 
@@ -46,18 +46,13 @@
 
 - name: Close in 1 minute from now
   cron:
-    name: "automatic close access {{ item }}"
+    name: "automatic close access {{ metatrader_user }}"
     minute: "{{ (current_date.stdout | to_datetime).minute + 1 }}"
     hour: "{{ (current_date.stdout | to_datetime).hour }}"
     day: "{{ (current_date.stdout | to_datetime).day }}"
     month: "{{ (current_date.stdout | to_datetime).month }}"
     job: >
-      conntrack -D -p tcp --dport {{ item }} &&
-      iptables -D INPUT -p tcp --dport {{ item }} -j ACCEPT 2>/dev/null || true &&
-      iptables -A INPUT -p tcp --dport {{ item }} -j DROP &&
-      crontab -l | grep -v "{{ item }}" | crontab -
+      systemctl stop vncserver@{{ metatrader_user_id }}.service &&
+      crontab -l | grep -v "{{ metatrader_user }}" | crontab -
     user: root
     state: present
-  with_items:
-    - 22  # SSH
-    - 3389  # RDP
