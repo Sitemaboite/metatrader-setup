@@ -1,0 +1,7 @@
+#!/bin/sh
+{% for metatrader_instance_number in range(1, metatrader_nb_profiles | int + 1) %}
+while true; do
+    WINEPREFIX="{{ metatrader_home }}/.mt5_{{ metatrader_instance_number }}" wine C:\\users\\Public\\Desktop\\MetaTrader\ 5.lnk
+    sleep 5
+done &
+{% endfor %}
