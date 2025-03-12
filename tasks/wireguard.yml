@@ -22,12 +22,6 @@
     state: directory
     mode: '0700'
 
-- name: Enable and start WireGuard service
-  systemd:
-    name: wg-quick@wg0
-    enabled: yes
-    state: started
-
 - name: Create client configuration directory
   file:
     path: /etc/wireguard/clients
@@ -49,8 +43,13 @@
 - name: Create WireGuard configuration file
   template:
     src: wireguard.conf.j2
-    dest: /etc/wireguard/wg0.conf
-    mode: '0600'
+    dest: /etc/wireguard/wg0.c
+    
+- name: Enable and start WireGuard service
+  systemd:
+    name: wg-quick@wg0
+    enabled: yes
+    state: started
 
 - name: Create client configuration files
   template:
