@@ -167,10 +167,19 @@
     state: present
     comment: "Allow connect to VNC from the local network"
 
+- name: mkdir /etc/iptables
+  file: path=/etc/iptables state=directory
+
 - name: Save iptables rules
   shell: iptables-save > /etc/iptables/rules.v4
   args:
     creates: /etc/iptables/rules.v4
+
+- name: Restore iptables rules on boot
+  copy:
+    src: /etc/iptables.rules.v4
+    dest: /etc/network/if-pre-up.d/iptables
+    mode: '0755'
 
 - name: Set wireguard clients to be all users above 1000
   set_fact:
