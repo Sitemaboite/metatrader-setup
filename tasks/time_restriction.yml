@@ -23,6 +23,21 @@
       - iptables
       - conntrack
     state: present
+- name: Get user number (UID)
+  getent:
+    database: passwd
+    key: "{{ metatrader_user }}"
+  register: user_info
+  changed_when: false
+
+- name: Set user UID fact
+  set_fact:
+    user_uid: "{{ user_info.ansible_facts.getent_passwd[metatrader_user][1] }}"
+  changed_when: false
+
+- name: Calculate VNC port
+  set_fact:
+    vnc_port: "{{ 5900 + user_uid | int - 1000 }}"
 
 - name: Set automatic open access
   cron:
@@ -60,4 +75,4 @@
     state: present
   with_items:
     - 22  # SSH
-    - 3389  # RDP
+    - "{{ vnc_port }}"  # VNC
