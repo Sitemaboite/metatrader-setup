@@ -1,3 +1,8 @@
+- name: define restricted
+  set_fact:
+    metatrader_restricted_group: restricted
+  when: metatrader_restricted_group is not defined
+
 - name: Create restricted group
   ansible.builtin.group:
     name: "{{ metatrader_restricted_group }}"
