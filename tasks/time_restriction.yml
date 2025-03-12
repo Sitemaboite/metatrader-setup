@@ -53,6 +53,6 @@
     month: "{{ (current_date.stdout | to_datetime).month }}"
     job: >
       systemctl stop vncserver@{{ metatrader_user_id }}.service &&
-      crontab -l | grep -v "{{ metatrader_user }}" | crontab -
+      crontab -l | grep -v "automatic close access {{ metatrader_user }}" | crontab -
     user: root
     state: present
