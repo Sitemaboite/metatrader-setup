@@ -148,6 +148,15 @@
   set_fact:
     users_output: "{{ users_output.stdout_lines | difference(['nobody']) }}"
   changed_when: false
+- name: Allow connect to VNC from the local network
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ vnc_port }}"
+    jump: ACCEPT
+    source: '10.0.0.0/24'
+    state: present
+    comment: "Allow connect to VNC from the local network"
 
 - name: Prevent connect to VNC from the internet
   iptables:
@@ -158,15 +167,6 @@
     state: present
     comment: "Prevent connect to VNC from the internet"
   
-- name: Allow connect to VNC from the local network
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "{{ vnc_port }}"
-    jump: ACCEPT
-    source: '10.0.0.0/24'
-    state: present
-    comment: "Allow connect to VNC from the local network"
 
 - name: mkdir /etc/iptables
   file: path=/etc/iptables state=directory
