@@ -121,9 +121,7 @@
       ExecStart=/usr/bin/vncserver -geometry 1920x1080 -depth 24 -rfbport {{ vnc_port }} -rfbauth /home/{{ metatrader_user }}/.vnc/passwd :%i -localhost no -X509Key /home/{{ metatrader_user }}/.vnc/vnc-server-key.pem -X509Cert /home/{{ metatrader_user }}/.vnc/vnc-server-cert.pem -SecurityTypes X509Vnc,TLSVnc -fg
       ExecStop=/usr/bin/vncserver -kill :%i
       Restart=always
-      RestartSec=10
-      WatchdogSec=30
-
+      RestartSec=3
       [Install]
       WantedBy=multi-user.target
     mode: '0644'
