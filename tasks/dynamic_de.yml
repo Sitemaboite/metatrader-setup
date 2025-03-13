@@ -43,6 +43,7 @@
       - xfonts-base
       - xfce4
       - xfce4-goodies
+      - task-xfce-desktop
 
 - name: Install openbox lightdm and xfce4
   apt:
