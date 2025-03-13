@@ -18,11 +18,8 @@ check_command() {
 install_ansible() {
     if [[ -f /etc/debian_version ]]; then
         sudo apt-get update
-        sudo apt-get install -y software-properties-common
-        if [[ -f /etc/lsb-release ]] && grep -q "Ubuntu" /etc/lsb-release; then
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-        fi
-        sudo apt-get install -y ansible
+        sudo apt-get install -y software-properties-common python3-pip
+        sudo python3 -m pip install ansible --break-system-packages
     elif [[ -f /etc/redhat-release ]]; then
         sudo dnf install -y epel-release
         sudo dnf install -y ansible
